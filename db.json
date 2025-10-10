@@ -1,0 +1,30 @@
+{
+    "users": [
+        {
+            "id": "1",
+            "name": "John Doe",
+            "email": "john@example.com",
+            "password": "123456"
+        },
+        {
+            "id": "cfb3",
+            "name": "Jumana p",
+            "email": "jumana.edv@gmail.com",
+            "password": "1234"
+        },
+        {
+            "id": "bd84",
+            "name": "Rinsha",
+            "email": "rinsha@gmail.com",
+            "password": "Rinsha1234"
+        }
+    ],
+    "products": [
+        {
+            "id": "p1",
+            "name": "Gold Ring",
+            "price": 1200,
+            "image": "https://example.com/ring.jpg"
+        }
+    ]
+}
