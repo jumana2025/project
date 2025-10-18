@@ -1,30 +1,511 @@
 {
-    "users": [
+  "users": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "123456"
+    },
+    {
+      "id": "cfb3",
+      "name": "Jumana p",
+      "email": "jumana.edv@gmail.com",
+      "password": "1234"
+    },
+    {
+      "id": "bd84",
+      "name": "Rinsha",
+      "email": "rinsha@gmail.com",
+      "password": "Rinsha1234"
+    },
+    {
+      "id": "5bb5",
+      "name": "Ahammed saad cp",
+      "email": "ahammedsaad.cp@gmail.com",
+      "password": "12345678"
+    },
+    {
+      "id": "0b9d",
+      "name": "sahad tp",
+      "email": "sahad.tp@gmail.com",
+      "password": "Sahadtp123"
+    },
+    {
+      "id": "8db7",
+      "name": "sahad tp",
+      "email": "sahadtp98@gmail.com",
+      "password": "Sahadis123456"
+    },
+    {
+      "id": "8638",
+      "name": "rashad ",
+      "email": "rashad007@gmail.com",
+      "password": "@Rasha007"
+    },
+    {
+      "id": "d426",
+      "name": "nibil",
+      "email": "nibil34@gmail.com",
+      "password": "nibil1234"
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "userEmail": "user1@gmail.com",
+      "items": [
         {
-            "id": "1",
-            "name": "John Doe",
-            "email": "john@example.com",
-            "password": "123456"
-        },
-        {
-            "id": "cfb3",
-            "name": "Jumana p",
-            "email": "jumana.edv@gmail.com",
-            "password": "1234"
-        },
-        {
-            "id": "bd84",
-            "name": "Rinsha",
-            "email": "rinsha@gmail.com",
-            "password": "Rinsha1234"
+          "name": "Gold Ring",
+          "price": 500
         }
-    ],
-    "products": [
+      ],
+      "total": 500
+    },
+    {
+      "id": 2,
+      "userEmail": "user2@gmail.com",
+      "items": [
         {
-            "id": "p1",
-            "name": "Gold Ring",
-            "price": 1200,
-            "image": "https://example.com/ring.jpg"
+          "name": "Necklace",
+          "price": 1000
         }
-    ]
+      ],
+      "total": 1000
+    },
+    {
+      "id": 1760609205026,
+      "userEmail": "rashad007@gmail.com",
+      "userName": "rashad ",
+      "items": [
+        {
+          "id": 2,
+          "name": "Engagment Ring",
+          "price": 1200,
+          "quantity": 1,
+          "image": "https://i.pinimg.com/736x/ce/a0/d7/cea0d702e3d36310d28dc71afeade230.jpg"
+        }
+      ],
+      "total": 1200,
+      "date": "10/16/2025, 3:36:45 PM",
+      "status": "pending"
+    },
+    {
+      "id": 1760609330941,
+      "userEmail": "sahadtp98@gmail.com",
+      "userName": "sahad tp",
+      "items": [
+        {
+          "id": 2,
+          "name": "Old Hollywood Dainty Bracelet ",
+          "price": 1400,
+          "quantity": 2,
+          "image": "https://i.pinimg.com/736x/f4/88/bb/f488bb03ba82b125fea7276eed9b38ef.jpg"
+        }
+      ],
+      "total": 2800,
+      "date": "10/16/2025, 3:38:50 PM",
+      "status": "pending"
+    },
+    {
+      "id": 1760609619538,
+      "userEmail": "sahadtp98@gmail.com",
+      "userName": "sahad tp",
+      "items": [
+        {
+          "id": 2,
+          "name": "Old Hollywood Dainty Bracelet ",
+          "price": 1400,
+          "quantity": 1,
+          "image": "https://i.pinimg.com/736x/f4/88/bb/f488bb03ba82b125fea7276eed9b38ef.jpg"
+        }
+      ],
+      "total": 1400,
+      "date": "10/16/2025, 3:43:39 PM",
+      "status": "pending"
+    },
+    {
+      "id": "fe6f",
+      "userEmail": "nibil34@gmail.com",
+      "userName": "nibil",
+      "items": [
+        {
+          "id": 2,
+          "category": "bracelets",
+          "name": "Old Hollywood Dainty Bracelet ",
+          "originalPrice": 1500,
+          "offerPrice": 1400,
+          "image": "https://i.pinimg.com/736x/f4/88/bb/f488bb03ba82b125fea7276eed9b38ef.jpg",
+          "quantity": 1
+        }
+      ],
+      "total": 1400,
+      "date": "10/17/2025, 2:21:31 PM",
+      "status": "pending"
+    },
+    {
+      "id": "6e31",
+      "userEmail": "nibil34@gmail.com",
+      "userName": "nibil",
+      "items": [
+        {
+          "id": 2,
+          "category": "bracelets",
+          "name": "Old Hollywood Dainty Bracelet ",
+          "originalPrice": 1500,
+          "offerPrice": 1400,
+          "image": "https://i.pinimg.com/736x/f4/88/bb/f488bb03ba82b125fea7276eed9b38ef.jpg",
+          "quantity": 1
+        }
+      ],
+      "total": 1400,
+      "date": "10/17/2025, 2:22:25 PM",
+      "status": "pending"
+    },
+    {
+      "id": "178d",
+      "userEmail": "nibil34@gmail.com",
+      "userName": "nibil",
+      "items": [
+        {
+          "id": 3,
+          "category": "bracelets",
+          "name": "Pearl Braclets ",
+          "originalPrice": 4000,
+          "offerPrice": 3500,
+          "image": "https://i.pinimg.com/736x/65/72/b8/6572b868f2b726172d0a7665311abd1c.jpg",
+          "quantity": 1
+        }
+      ],
+      "total": 3500,
+      "date": "10/17/2025, 2:41:20 PM",
+      "status": "pending"
+    }
+  ],
+  "offers": [
+    {
+      "id": 2,
+      "image": "https://i.pinimg.com/1200x/16/1f/02/161f02f8e5b7728798f862e0f9bea230.jpg"
+    },
+    {
+      "id": 3,
+      "image": "https://i.pinimg.com/1200x/fd/a5/44/fda544f58b4acdd44476bbc75cb44bc2.jpg"
+    },
+    {
+      "id": 4,
+      "image": "https://i.pinimg.com/736x/3a/23/4d/3a234d5a4649c291bd080966b5eb827b.jpg"
+    }
+  ],
+  "ring": [
+    {
+      "id": 1,
+      "category": "ring",
+      "metal": "Diamond",
+      "name": "Diamond Ring",
+      "originalPrice": 20000,
+      "offerPrice": 19000,
+      "image": "https://i.pinimg.com/736x/3c/e5/92/3ce592d081090b361711075fc9d9509e.jpg"
+    },
+    {
+      "id": 2,
+      "category": "ring",
+      "metal": "Silver",
+      "name": "Engagment Ring",
+      "originalPrice": 8000,
+      "offerPrice": 7900,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/ce/a0/d7/cea0d702e3d36310d28dc71afeade230.jpg"
+    },
+    {
+      "id": 3,
+      "category": "ring",
+      "metal": "Gold and Diamond",
+      "name": "Engagment Ring",
+      "originalPrice": 45000,
+      "offerPrice": 40000,
+      "stock": 2,
+      "image": "https://i.pinimg.com/736x/fa/7d/88/fa7d884df4514155fe6a8bf8ee494268.jpg"
+    },
+    {
+      "id": 4,
+      "category": "ring",
+      "metal": "Gold",
+      "name": "Couple Ring",
+      "originalPrice": 50000,
+      "offerPrice": 49000,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/e4/5a/69/e45a69ab854ef0e5e85388a0c68ea72b.jpg"
+    },
+    {
+      "id": 5,
+      "category": "ring",
+      "metal": "Diamond",
+      "name": "Diamond v-Ring",
+      "originalPrice": 50000,
+      "offerPrice": 48500,
+      "stock": 4,
+      "image": "https://i.pinimg.com/736x/22/29/6a/22296ab72853f058ba4fcbcf9a3bb09c.jpg"
+    },
+    {
+      "id": 6,
+      "category": "ring",
+      "metal": "Silver",
+      "name": "Silver Ring",
+      "originalPrice": 4000,
+      "offerPrice": 3800,
+      "stock": 1,
+      "image": "https://i.pinimg.com/736x/fc/47/d8/fc47d83fd67d25648cbb2da55d57efdb.jpg"
+    },
+    {
+      "id": 7,
+      "category": "ring",
+      "metal": "Gold",
+      "name": "Engagment Ring",
+      "originalPrice": 15000,
+      "offerPrice": 12000,
+      "stock": 2,
+      "image": "https://i.pinimg.com/736x/fa/7d/88/fa7d884df4514155fe6a8bf8ee494268.jpg"
+    },
+    {
+      "id": 8,
+      "category": "ring",
+      "metal": "fashion",
+      "name": "Ring Set",
+      "originalPrice": 3500,
+      "offerPrice": 3200,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/73/dd/c6/73ddc6aa26f2a3163ac36160dce1e958.jpg"
+    },
+    {
+      "id": 9,
+      "category": "ring",
+      "metal": "fashion",
+      "name": "Ring Stack",
+      "originalPrice": 3000,
+      "offerPrice": 2500,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/e2/4f/56/e24f567ac90d8c3fddfb74e120ec1b2e.jpg"
+    },
+    {
+      "id": 10,
+      "category": "ring",
+      "metal": "Diamond",
+      "name": "Diamond Ring ",
+      "originalPrice": 50000,
+      "offerPrice": 49000,
+      "stock": 3,
+      "image": "https://i.pinimg.com/1200x/82/7f/f5/827ff52f721b418fb92b62a9b6431924.jpg"
+    },
+    {
+      "id": 11,
+      "category": "ring",
+      "metal": "Platinum",
+      "name": "platinum Ring ",
+      "originalPrice": 5000,
+      "offerPrice": 4000,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/1f/36/e5/1f36e51d64148728f81e6b6e56656e34.jpg"
+    },
+    {
+      "id": 12,
+      "category": "ring",
+      "metal": "Gold",
+      "name": "Gold Ring",
+      "originalPrice": 35000,
+      "offerPrice": 32000,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/7a/e2/90/7ae290dfdeb8040210a2d1d635ae6e13.jpg"
+    },
+    {
+      "id": 13,
+      "category": "ring",
+      "metal": "Gold",
+      "name": "Gold Ring",
+      "originalPrice": 34000,
+      "offerPrice": 32000,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/d2/b9/e2/d2b9e2065a2da98197e57bec307dd9de.jpg"
+    },
+    {
+      "id": 14,
+      "category": "ring",
+      "metal": "Silver",
+      "name": "Silver Ring",
+      "originalPrice": 3500,
+      "offerPrice": 3200,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/9e/23/3a/9e233a40b9d16b3a811f5de96d869f90.jpg"
+    },
+    {
+      "id": 15,
+      "category": "ring",
+      "metal": "Silver",
+      "name": "Silver Ring",
+      "originalPrice": 4000,
+      "offerPrice": 3900,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/31/14/d4/3114d45cc294b8f7efc9224acf21b40a.jpg"
+    },
+    {
+      "id": 16,
+      "category": "ring",
+      "metal": "Silver",
+      "name": "Silver Ring",
+      "originalPrice": 3300,
+      "offerPrice": 3200,
+      "stock": 3,
+      "image": "https://i.pinimg.com/1200x/96/fc/57/96fc57346e76662a86121876997b314d.jpg"
+    },
+    {
+      "id": 17,
+      "category": "ring",
+      "metal": "Silver",
+      "name": "Silver Ring",
+      "originalPrice": 3600,
+      "offerPrice": 3500,
+      "stock": 3,
+      "image": "https://i.pinimg.com/736x/91/c1/fb/91c1fbe144d74eda15de09483098d200.jpg"
+    },
+    {
+      "id": 12,
+      "category": "ring",
+      "metal": "fashion",
+      "name": "Fashion  Ring",
+      "originalPrice": 1000,
+      "offerPrice": 999,
+      "stock": 3,
+      "image": "https://i.pinimg.com/1200x/d8/82/2f/d8822fb99329b9cd18443181ca201f66.jpg"
+    }
+  ],
+  "necklace": [
+    {
+      "id": 1,
+      "category": "necklace",
+      "name": "Pearl Necklace",
+      "originalPrice": 2500,
+      "offerPrice": 2300,
+      "image": "https://i.pinimg.com/1200x/2e/1c/e0/2e1ce007d3004f2a39a109f70f0b0034.jpg"
+    },
+    {
+      "id": 2,
+      "category": "necklace",
+      "name": "Gold Chain Necklace",
+      "originalPrice": 1500,
+      "offerPrice": 1200,
+      "image": "https://biobeautify.com/cdn/shop/files/IMG-58872.jpg?v=1735865606&width=823"
+    },
+    {
+      "id": 3,
+      "category": "necklace",
+      "name": "Pearl Necklace",
+      "originalPrice": 1800,
+      "offerPrice": 1700,
+      "image": "https://i.pinimg.com/736x/5f/da/54/5fda547c66f85840a1e2069cd90b1ebb.jpg"
+    },
+    {
+      "id": 3,
+      "category": "necklace",
+      "name": "Diamond Necklace",
+      "originalPrice": 1500,
+      "offerPrice": 1200,
+      "image": "https://i.pinimg.com/736x/29/f7/c7/29f7c743067cff34bf9515386aa34b3f.jpg"
+    },
+    {
+      "id": 3,
+      "category": "necklace",
+      "name": "Jhumkas Necklace",
+      "originalPrice": 3000,
+      "offerPrice": 2500,
+      "image": "https://i.pinimg.com/736x/83/4f/bc/834fbc5858beb83af323e47e1113818f.jpg"
+    },
+    {
+      "id": 3,
+      "category": "necklace",
+      "name": "Diamond dreamy set",
+      "originalPrice": 2000,
+      "offerPrice": 1900,
+      "image": "https://i.pinimg.com/736x/42/d9/43/42d943b837cded72687340660304209e.jpg"
+    },
+    {
+      "id": 3,
+      "category": "necklace",
+      "name": "Pearl Necklac",
+      "originalPrice": 1500,
+      "offerPrice": 1200,
+      "image": "https://i.pinimg.com/736x/62/90/b7/6290b7259b04607e1609815b19a8df39.jpg"
+    },
+    {
+      "id": 3,
+      "category": "necklace",
+      "name": "Pearl Necklac",
+      "originalPrice": 1200,
+      "offerPrice": 1000,
+      "image": "https://i.pinimg.com/736x/14/9e/e6/149ee6ab08b27c2b9586b0db230166ba.jpg"
+    },
+    {
+      "id": 3,
+      "category": "necklace",
+      "name": "Pearl Choker Necklace",
+      "originalPrice": 1500,
+      "offerPrice": 1200,
+      "image": "https://i.pinimg.com/736x/f2/a2/27/f2a2278fdba6e923af271a063b515a9c.jpg"
+    },
+    {
+      "id": 3,
+      "category": "necklace",
+      "name": "Rose Gold Layer Necklace",
+      "originalPrice": 1500,
+      "offerPrice": 270,
+      "image": "https://i.pinimg.com/736x/74/1a/aa/741aaaf7c647f65600744c06f7faf1c8.jpg"
+    }
+  ],
+  "bracelets": [
+    {
+      "id": 1,
+      "category": "bracelets",
+      "name": "Pearl Braclets ",
+      "originalPrice": 1500,
+      "offerPrice": 1200,
+      "image": "https://i.pinimg.com/1200x/17/40/65/17406587bde05c16c44f60da41b4f71d.jpg"
+    },
+    {
+      "id": 2,
+      "category": "bracelets",
+      "name": "Old Hollywood Dainty Bracelet ",
+      "originalPrice": 1500,
+      "offerPrice": 1400,
+      "image": "https://i.pinimg.com/736x/f4/88/bb/f488bb03ba82b125fea7276eed9b38ef.jpg"
+    },
+    {
+      "id": 3,
+      "category": "bracelets",
+      "name": "Pearl Braclets ",
+      "originalPrice": 4000,
+      "offerPrice": 3500,
+      "image": "https://i.pinimg.com/736x/65/72/b8/6572b868f2b726172d0a7665311abd1c.jpg"
+    },
+    {
+      "id": 4,
+      "category": "bracelets",
+      "name": "LapGrown Diamond Bracelets ",
+      "originalPrice": 5000,
+      "offerPrice": 4500,
+      "image": "https://i.pinimg.com/736x/5c/c3/4b/5cc34b31563f889bf10c84dd8b7d7ea7.jpg"
+    },
+    {
+      "id": 5,
+      "category": "bracelets",
+      "name": "Diamond Bracelets ",
+      "originalPrice": 3000,
+      "offerPrice": 2900,
+      "image": "https://i.pinimg.com/736x/46/1b/ac/461bac5251af2dd1cd38225cd13c29fb.jpg"
+    },
+    {
+      "id": 3,
+      "category": "bracelets",
+      "name": "Diamond Choker",
+      "originalPrice": 1500,
+      "offerPrice": 1200,
+      "image": "https://i.pinimg.com/1200x/3c/c8/01/3cc8018a969190475a2d950773f8f0a6.jpg"
+    }
+  ]
 }

@@ -20,17 +20,17 @@ function Register() {
 
     const validate = () => {
         const newErrors = {};
-        const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
 
         if (!formData.name) newErrors.name = "Name is required";
+
         if (!formData.email) newErrors.email = "Email is required";
-        else if (!emailPattern.test(formData.email)) newErrors.email = "Invalid email";
+        else if (!formData.email.includes("@")) newErrors.email = "Email must include @";
 
         if (!formData.password) newErrors.password = "Password is required";
-        else if (formData.password.length < 8)
-            newErrors.password = "Password must be 8+ chars";
-        else if (formData.password[0] !== formData.password[0].toUpperCase())
-            newErrors.password = "Password must start with uppercase";
+        else if (formData.password.length < 6)
+            newErrors.password = "Password must be 6+ chars";
+        else if (formData.password[0] !== formData.password[0].toLowerCase())
+            newErrors.password = "Password must be all in LowerCase";
 
         if (!formData.confirm) newErrors.confirm = "Confirm password is required";
         else if (formData.password !== formData.confirm)
@@ -45,8 +45,8 @@ function Register() {
         if (!validate()) return;
 
         try {
-            const res = await axios.get(`http://localhost:5000/users?email=${formData.email}`);
-            if (res.data.length > 0) {
+            const str = await axios.get(`http://localhost:5000/users?email=${formData.email}`);
+            if (str.data.length > 0) {
                 alert("Email already exists!");
                 return;
             }
