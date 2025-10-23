@@ -1,8 +1,9 @@
+// SearchPage.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 
-const SearchResults = () => {
+const SearchPage = () => {
     const location = useLocation();
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -10,40 +11,44 @@ const SearchResults = () => {
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        const q = params.get("q") || "";
+        const q = (params.get("q") || "").trim(); // remove extra spaces
         setQuery(q);
 
-        if (q.trim() !== "") {
-            setLoading(true);
-
-            const urls = [
-                "http://localhost:5000/products",
-                "http://localhost:5000/rings",
-                "http://localhost:5000/bracelets",
-                "http://localhost:5000/necklaces",
-                "http://localhost:5000/earrings",
-            ];
-
-            Promise.all(urls.map((url) => axios.get(url)))
-                .then((responses) => {
-                    const allProducts = responses.flatMap((res) => res.data);
-
-                    const filtered = allProducts.filter((item) => {
-                        const name = item.name || item.title || "";
-                        return name.toLowerCase().includes(q.toLowerCase());
-                    });
-
-                    setResults(filtered);
-                })
-                .catch((err) => console.error("Search error:", err))
-                .finally(() => setLoading(false));
-        } else {
+        if (q === "") {
             setResults([]);
             setLoading(false);
+            return;
         }
+
+        setLoading(true);
+
+        // Make sure all URLs match your JSON server endpoints
+        const urls = [
+
+            "http://localhost:5000/ring",
+            "http://localhost:5000/bracelets",
+            "http://localhost:5000/necklace",
+
+        ];
+
+        Promise.all(urls.map(url => axios.get(url).catch(() => ({ data: [] }))))
+            .then(responses => {
+                // Flatten all products
+                const allProducts = responses.flatMap(res => res.data || []);
+
+                // Filter by name/title (case-insensitive)
+                const filtered = allProducts.filter(item => {
+                    const name = item.name || item.title || "";
+                    return name.toLowerCase().includes(q.toLowerCase());
+                });
+
+                setResults(filtered);
+            })
+            .catch(err => console.error("Search error:", err))
+            .finally(() => setLoading(false));
     }, [location.search]);
 
-    if (loading) return <p className="p-4">Loading...</p>;
+    if (loading) return <p className="p-4 text-center">Loading...</p>;
 
     return (
         <div className="max-w-6xl mx-auto p-4">
@@ -55,8 +60,11 @@ const SearchResults = () => {
                 <p>No products found.</p>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {results.map((product) => (
-                        <div key={product.id} className="border p-4 rounded shadow">
+                    {results.map(product => (
+                        <div
+                            key={product.id}
+                            className="border rounded p-4 shadow hover:shadow-lg transition"
+                        >
                             <img
                                 src={product.image}
                                 alt={product.name || product.title}
@@ -65,7 +73,7 @@ const SearchResults = () => {
                             <h2 className="text-lg font-semibold">
                                 {product.name || product.title}
                             </h2>
-                            <p className="text-gray-600">₹{product.price}</p>
+                            <p className="text-gray-600">₹{product.offerPrice || product.price}</p>
                         </div>
                     ))}
                 </div>
@@ -74,4 +82,4 @@ const SearchResults = () => {
     );
 };
 
-export default SearchResults;
+export default SearchPage;

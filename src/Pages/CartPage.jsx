@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 
@@ -6,6 +6,15 @@ function CartPage() {
     const { cart = [], removeFromCart, updateQuantity } = useContext(CartContext);
     const [selectedItems, setSelectedItems] = useState([]);
     const navigate = useNavigate();
+
+    // ✅ Login check on page load
+    useEffect(() => {
+        const user = localStorage.getItem("user"); // or use AuthContext if available
+        if (!user) {
+            alert("Please login to access your cart.");
+            navigate("/login");
+        }
+    }, [navigate]);
 
     const toggleSelect = (id) => {
         setSelectedItems(prev =>
@@ -29,23 +38,16 @@ function CartPage() {
             return;
         }
 
-        // Get selected items details before removing
         const purchasedItems = cart.filter(item => selectedItems.includes(item.id));
         const totalAmount = purchasedItems.reduce(
             (acc, item) => acc + Number(item.offerPrice) * Number(item.quantity),
             0
         );
 
-        // Remove selected items from cart
         selectedItems.forEach(id => removeFromCart(id));
-
-        // Clear selected items state
         setSelectedItems([]);
-
-        // Navigate to payment page with purchased items
         navigate("/payment", { state: { items: purchasedItems, total: totalAmount } });
     };
-
 
     if (!cart || cart.length === 0) {
         return (

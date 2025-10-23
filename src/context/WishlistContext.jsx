@@ -1,21 +1,37 @@
 import { createContext, useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
-    const [wishlist, setWishlist] = useState(() => {
-        const saved = localStorage.getItem("wishlist");
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [wishlist, setWishlist] = useState([]);
+    const [userId, setUserId] = useState(null);
 
+    // Load user ID from localStorage and wishlist
     useEffect(() => {
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-    }, [wishlist]);
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        if (storedUser) {
+            setUserId(storedUser.id);
+            const savedWishlist = localStorage.getItem(`wishlist_${storedUser.id}`);
+            setWishlist(savedWishlist ? JSON.parse(savedWishlist) : []);
+        }
+    }, []);
+
+    // Save wishlist whenever it changes
+    useEffect(() => {
+        if (userId !== null) {
+            localStorage.setItem(`wishlist_${userId}`, JSON.stringify(wishlist));
+        }
+    }, [wishlist, userId]);
 
     const addToWishlist = (product) => {
+        if (!userId) {
+            toast.warning("Please login to add products to your wishlist");
+            return;
+        }
+
         setWishlist((prev) => {
-            const exist = prev.find((item) => item.id === product.id);
-            if (exist) return prev;
+            if (prev.find((item) => item.id === product.id)) return prev;
             return [...prev, product];
         });
     };
@@ -27,9 +43,15 @@ export const WishlistProvider = ({ children }) => {
     const clearWishlist = () => setWishlist([]);
 
     return (
-        <WishlistContext.Provider value={{ wishlist, addToWishlist, removeFromWishlist, clearWishlist }}>
+        <WishlistContext.Provider
+            value={{
+                wishlist,
+                addToWishlist,
+                removeFromWishlist,
+                clearWishlist,
+            }}
+        >
             {children}
         </WishlistContext.Provider>
     );
 };
-

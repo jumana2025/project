@@ -1,57 +1,110 @@
 {
   "users": [
     {
-      "id": "1",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "password": "123456"
-    },
-    {
       "id": "cfb3",
       "name": "Jumana p",
       "email": "jumana.edv@gmail.com",
-      "password": "1234"
+      "password": "1234",
+      "role": "user",
+      "isActive": true,
+      "isBlocked": false,
+      "createdAt": "2024-02-20T14:20:00Z",
+      "lastLogin": "2024-12-18T16:30:00Z"
     },
     {
-      "id": "bd84",
-      "name": "Rinsha",
-      "email": "rinsha@gmail.com",
-      "password": "Rinsha1234"
+      "isBlocked": false,
+      "id": "bd84"
     },
     {
-      "id": "5bb5",
-      "name": "Ahammed saad cp",
-      "email": "ahammedsaad.cp@gmail.com",
-      "password": "12345678"
+      "isBlocked": false,
+      "id": "5bb5"
     },
     {
       "id": "0b9d",
       "name": "sahad tp",
       "email": "sahad.tp@gmail.com",
-      "password": "Sahadtp123"
+      "password": "Sahadtp123",
+      "role": "user",
+      "isActive": true,
+      "isBlocked": false,
+      "createdAt": "2024-05-12T16:25:00Z",
+      "lastLogin": "2024-12-16T10:15:00Z"
     },
     {
       "id": "8db7",
       "name": "sahad tp",
       "email": "sahadtp98@gmail.com",
-      "password": "Sahadis123456"
+      "password": "Sahadis123456",
+      "role": "user",
+      "isActive": true,
+      "isBlocked": false,
+      "createdAt": "2024-06-08T13:40:00Z",
+      "lastLogin": "2024-12-19T09:30:00Z"
     },
     {
       "id": "8638",
-      "name": "rashad ",
+      "name": "rashad",
       "email": "rashad007@gmail.com",
-      "password": "@Rasha007"
+      "password": "@Rasha007",
+      "role": "user",
+      "isActive": true,
+      "isBlocked": false,
+      "createdAt": "2024-07-22T08:50:00Z",
+      "lastLogin": "2024-12-18T14:25:00Z"
     },
     {
       "id": "d426",
       "name": "nibil",
       "email": "nibil34@gmail.com",
-      "password": "nibil1234"
+      "password": "nibil1234",
+      "role": "user",
+      "isActive": true,
+      "isBlocked": false,
+      "createdAt": "2024-08-30T12:35:00Z",
+      "lastLogin": "2024-12-19T15:40:00Z"
+    },
+    {
+      "isBlocked": false,
+      "id": "bde5"
+    },
+    {
+      "isBlocked": false,
+      "id": "8cd5"
+    },
+    {
+      "id": "e208",
+      "name": "Jumana p",
+      "email": "admin.edv@gmail.com",
+      "password": "jumanasaifu12345",
+      "role": "admin",
+      "isActive": true,
+      "isBlocked": false,
+      "createdAt": "2024-01-10T09:00:00Z",
+      "lastLogin": "2024-12-19T10:15:00Z"
+    },
+    {
+      "id": "d708",
+      "name": "Admin",
+      "email": "adminjum@gmail.com",
+      "password": "adminis12345",
+      "role": "admin",
+      "isActive": true,
+      "isBlocked": false,
+      "createdAt": "2024-01-08T08:30:00Z",
+      "lastLogin": "2024-12-18T17:45:00Z"
+    },
+    {
+      "isActive": true,
+      "id": "1761144717830"
+    },
+    {
+      "isActive": false,
+      "id": "1761144908066"
     }
   ],
   "orders": [
     {
-      "id": 1,
+      "id": "1",
       "userEmail": "user1@gmail.com",
       "items": [
         {
@@ -59,10 +112,11 @@
           "price": 500
         }
       ],
-      "total": 500
+      "total": 500,
+      "status": "completed"
     },
     {
-      "id": 2,
+      "id": "2",
       "userEmail": "user2@gmail.com",
       "items": [
         {
@@ -73,7 +127,7 @@
       "total": 1000
     },
     {
-      "id": 1760609205026,
+      "id": "1760609205026",
       "userEmail": "rashad007@gmail.com",
       "userName": "rashad ",
       "items": [
@@ -87,10 +141,10 @@
       ],
       "total": 1200,
       "date": "10/16/2025, 3:36:45 PM",
-      "status": "pending"
+      "status": "completed"
     },
     {
-      "id": 1760609330941,
+      "id": "1760609330941",
       "userEmail": "sahadtp98@gmail.com",
       "userName": "sahad tp",
       "items": [
@@ -107,7 +161,7 @@
       "status": "pending"
     },
     {
-      "id": 1760609619538,
+      "id": "1760609619538",
       "userEmail": "sahadtp98@gmail.com",
       "userName": "sahad tp",
       "items": [
@@ -121,7 +175,7 @@
       ],
       "total": 1400,
       "date": "10/16/2025, 3:43:39 PM",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "fe6f",
@@ -140,7 +194,7 @@
       ],
       "total": 1400,
       "date": "10/17/2025, 2:21:31 PM",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6e31",
@@ -159,7 +213,7 @@
       ],
       "total": 1400,
       "date": "10/17/2025, 2:22:25 PM",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "178d",
@@ -178,45 +232,121 @@
       ],
       "total": 3500,
       "date": "10/17/2025, 2:41:20 PM",
+      "status": "cancelled"
+    },
+    {
+      "id": "eea1",
+      "userEmail": "nibil34@gmail.com",
+      "userName": "nibil",
+      "items": [
+        {
+          "id": "4",
+          "category": "ring",
+          "metal": "Gold",
+          "name": "Couple Ring",
+          "originalPrice": 50000,
+          "offerPrice": 49000,
+          "stock": 3,
+          "image": "https://i.pinimg.com/736x/e4/5a/69/e45a69ab854ef0e5e85388a0c68ea72b.jpg",
+          "quantity": 3
+        }
+      ],
+      "total": 147000,
+      "date": "10/18/2025, 8:46:31 AM",
       "status": "pending"
+    },
+    {
+      "id": "369b",
+      "userEmail": "psmundengara@gmail.com",
+      "userName": "saifudheen p",
+      "items": [
+        {
+          "id": "3",
+          "category": "necklace",
+          "name": "Pearl Necklace",
+          "originalPrice": 1800,
+          "offerPrice": 1700,
+          "image": "https://i.pinimg.com/736x/5f/da/54/5fda547c66f85840a1e2069cd90b1ebb.jpg"
+        }
+      ],
+      "total": 1700,
+      "date": "10/18/2025, 10:56:31 AM",
+      "status": "completed"
+    },
+    {
+      "id": "0db1",
+      "userEmail": "ahammedsaad.cp@gmail.com",
+      "userName": "Ahammed saad cp",
+      "items": [
+        {
+          "id": "3",
+          "name": "Pearl Necklace",
+          "offerPrice": 1700,
+          "image": "https://i.pinimg.com/736x/5f/da/54/5fda547c66f85840a1e2069cd90b1ebb.jpg"
+        }
+      ],
+      "total": 1700,
+      "date": "10/22/2025, 7:33:38 PM",
+      "status": "processing"
+    },
+    {
+      "id": "b69a",
+      "userEmail": "rashad007@gmail.com",
+      "userName": "rashad",
+      "items": [
+        {
+          "id": "2",
+          "name": "Old Hollywood Dainty Bracelet ",
+          "offerPrice": 1400,
+          "image": "https://i.pinimg.com/736x/f4/88/bb/f488bb03ba82b125fea7276eed9b38ef.jpg"
+        }
+      ],
+      "total": 1400,
+      "date": "10/23/2025, 10:58:25 AM",
+      "status": "completed"
     }
   ],
   "offers": [
     {
-      "id": 2,
+      "id": "2",
       "image": "https://i.pinimg.com/1200x/16/1f/02/161f02f8e5b7728798f862e0f9bea230.jpg"
     },
     {
-      "id": 3,
+      "id": "3",
       "image": "https://i.pinimg.com/1200x/fd/a5/44/fda544f58b4acdd44476bbc75cb44bc2.jpg"
     },
     {
-      "id": 4,
+      "id": "4",
       "image": "https://i.pinimg.com/736x/3a/23/4d/3a234d5a4649c291bd080966b5eb827b.jpg"
     }
   ],
   "ring": [
     {
-      "id": 1,
+      "id": "1",
       "category": "ring",
       "metal": "Diamond",
       "name": "Diamond Ring",
       "originalPrice": 20000,
       "offerPrice": 19000,
-      "image": "https://i.pinimg.com/736x/3c/e5/92/3ce592d081090b361711075fc9d9509e.jpg"
+      "image": "https://i.pinimg.com/736x/3c/e5/92/3ce592d081090b361711075fc9d9509e.jpg",
+      "price": 19000,
+      "description": "its making to using gold",
+      "stock": "10"
     },
     {
-      "id": 2,
+      "id": "2",
       "category": "ring",
       "metal": "Silver",
       "name": "Engagment Ring",
       "originalPrice": 8000,
       "offerPrice": 7900,
-      "stock": 3,
-      "image": "https://i.pinimg.com/736x/ce/a0/d7/cea0d702e3d36310d28dc71afeade230.jpg"
+      "stock": "0",
+      "image": "https://i.pinimg.com/736x/ce/a0/d7/cea0d702e3d36310d28dc71afeade230.jpg",
+      "price": 7900,
+      "description": "its making to using silver metal"
     },
     {
-      "id": 3,
+      "id": "3",
       "category": "ring",
       "metal": "Gold and Diamond",
       "name": "Engagment Ring",
@@ -226,7 +356,7 @@
       "image": "https://i.pinimg.com/736x/fa/7d/88/fa7d884df4514155fe6a8bf8ee494268.jpg"
     },
     {
-      "id": 4,
+      "id": "4",
       "category": "ring",
       "metal": "Gold",
       "name": "Couple Ring",
@@ -236,7 +366,7 @@
       "image": "https://i.pinimg.com/736x/e4/5a/69/e45a69ab854ef0e5e85388a0c68ea72b.jpg"
     },
     {
-      "id": 5,
+      "id": "5",
       "category": "ring",
       "metal": "Diamond",
       "name": "Diamond v-Ring",
@@ -246,7 +376,7 @@
       "image": "https://i.pinimg.com/736x/22/29/6a/22296ab72853f058ba4fcbcf9a3bb09c.jpg"
     },
     {
-      "id": 6,
+      "id": "6",
       "category": "ring",
       "metal": "Silver",
       "name": "Silver Ring",
@@ -256,7 +386,7 @@
       "image": "https://i.pinimg.com/736x/fc/47/d8/fc47d83fd67d25648cbb2da55d57efdb.jpg"
     },
     {
-      "id": 7,
+      "id": "7",
       "category": "ring",
       "metal": "Gold",
       "name": "Engagment Ring",
@@ -266,7 +396,7 @@
       "image": "https://i.pinimg.com/736x/fa/7d/88/fa7d884df4514155fe6a8bf8ee494268.jpg"
     },
     {
-      "id": 8,
+      "id": "8",
       "category": "ring",
       "metal": "fashion",
       "name": "Ring Set",
@@ -276,7 +406,7 @@
       "image": "https://i.pinimg.com/736x/73/dd/c6/73ddc6aa26f2a3163ac36160dce1e958.jpg"
     },
     {
-      "id": 9,
+      "id": "9",
       "category": "ring",
       "metal": "fashion",
       "name": "Ring Stack",
@@ -286,7 +416,7 @@
       "image": "https://i.pinimg.com/736x/e2/4f/56/e24f567ac90d8c3fddfb74e120ec1b2e.jpg"
     },
     {
-      "id": 10,
+      "id": "10",
       "category": "ring",
       "metal": "Diamond",
       "name": "Diamond Ring ",
@@ -296,7 +426,7 @@
       "image": "https://i.pinimg.com/1200x/82/7f/f5/827ff52f721b418fb92b62a9b6431924.jpg"
     },
     {
-      "id": 11,
+      "id": "11",
       "category": "ring",
       "metal": "Platinum",
       "name": "platinum Ring ",
@@ -306,7 +436,7 @@
       "image": "https://i.pinimg.com/736x/1f/36/e5/1f36e51d64148728f81e6b6e56656e34.jpg"
     },
     {
-      "id": 12,
+      "id": "12",
       "category": "ring",
       "metal": "Gold",
       "name": "Gold Ring",
@@ -316,7 +446,7 @@
       "image": "https://i.pinimg.com/736x/7a/e2/90/7ae290dfdeb8040210a2d1d635ae6e13.jpg"
     },
     {
-      "id": 13,
+      "id": "13",
       "category": "ring",
       "metal": "Gold",
       "name": "Gold Ring",
@@ -326,7 +456,7 @@
       "image": "https://i.pinimg.com/736x/d2/b9/e2/d2b9e2065a2da98197e57bec307dd9de.jpg"
     },
     {
-      "id": 14,
+      "id": "14",
       "category": "ring",
       "metal": "Silver",
       "name": "Silver Ring",
@@ -336,7 +466,7 @@
       "image": "https://i.pinimg.com/736x/9e/23/3a/9e233a40b9d16b3a811f5de96d869f90.jpg"
     },
     {
-      "id": 15,
+      "id": "15",
       "category": "ring",
       "metal": "Silver",
       "name": "Silver Ring",
@@ -346,7 +476,7 @@
       "image": "https://i.pinimg.com/736x/31/14/d4/3114d45cc294b8f7efc9224acf21b40a.jpg"
     },
     {
-      "id": 16,
+      "id": "16",
       "category": "ring",
       "metal": "Silver",
       "name": "Silver Ring",
@@ -356,7 +486,7 @@
       "image": "https://i.pinimg.com/1200x/96/fc/57/96fc57346e76662a86121876997b314d.jpg"
     },
     {
-      "id": 17,
+      "id": "17",
       "category": "ring",
       "metal": "Silver",
       "name": "Silver Ring",
@@ -366,7 +496,16 @@
       "image": "https://i.pinimg.com/736x/91/c1/fb/91c1fbe144d74eda15de09483098d200.jpg"
     },
     {
-      "id": 12,
+      "id": "18",
+      "category": "ring",
+      "metal": "Silver",
+      "name": "Couple Ring",
+      "originalPrice": 15000,
+      "offerPrice": 14500,
+      "image": "https://i.pinimg.com/1200x/a0/67/f3/a067f38c1bd6b1dc43c283e529ae9596.jpg"
+    },
+    {
+      "id": "19",
       "category": "ring",
       "metal": "fashion",
       "name": "Fashion  Ring",
@@ -378,7 +517,7 @@
   ],
   "necklace": [
     {
-      "id": 1,
+      "id": "1",
       "category": "necklace",
       "name": "Pearl Necklace",
       "originalPrice": 2500,
@@ -386,7 +525,7 @@
       "image": "https://i.pinimg.com/1200x/2e/1c/e0/2e1ce007d3004f2a39a109f70f0b0034.jpg"
     },
     {
-      "id": 2,
+      "id": "2",
       "category": "necklace",
       "name": "Gold Chain Necklace",
       "originalPrice": 1500,
@@ -394,7 +533,7 @@
       "image": "https://biobeautify.com/cdn/shop/files/IMG-58872.jpg?v=1735865606&width=823"
     },
     {
-      "id": 3,
+      "id": "3",
       "category": "necklace",
       "name": "Pearl Necklace",
       "originalPrice": 1800,
@@ -402,7 +541,7 @@
       "image": "https://i.pinimg.com/736x/5f/da/54/5fda547c66f85840a1e2069cd90b1ebb.jpg"
     },
     {
-      "id": 3,
+      "id": "4",
       "category": "necklace",
       "name": "Diamond Necklace",
       "originalPrice": 1500,
@@ -410,7 +549,7 @@
       "image": "https://i.pinimg.com/736x/29/f7/c7/29f7c743067cff34bf9515386aa34b3f.jpg"
     },
     {
-      "id": 3,
+      "id": "5",
       "category": "necklace",
       "name": "Jhumkas Necklace",
       "originalPrice": 3000,
@@ -418,7 +557,7 @@
       "image": "https://i.pinimg.com/736x/83/4f/bc/834fbc5858beb83af323e47e1113818f.jpg"
     },
     {
-      "id": 3,
+      "id": "6",
       "category": "necklace",
       "name": "Diamond dreamy set",
       "originalPrice": 2000,
@@ -426,7 +565,7 @@
       "image": "https://i.pinimg.com/736x/42/d9/43/42d943b837cded72687340660304209e.jpg"
     },
     {
-      "id": 3,
+      "id": "7",
       "category": "necklace",
       "name": "Pearl Necklac",
       "originalPrice": 1500,
@@ -434,7 +573,7 @@
       "image": "https://i.pinimg.com/736x/62/90/b7/6290b7259b04607e1609815b19a8df39.jpg"
     },
     {
-      "id": 3,
+      "id": "8",
       "category": "necklace",
       "name": "Pearl Necklac",
       "originalPrice": 1200,
@@ -442,15 +581,19 @@
       "image": "https://i.pinimg.com/736x/14/9e/e6/149ee6ab08b27c2b9586b0db230166ba.jpg"
     },
     {
-      "id": 3,
+      "id": "9",
       "category": "necklace",
+      "metal": "",
       "name": "Pearl Choker Necklace",
       "originalPrice": 1500,
-      "offerPrice": 1200,
-      "image": "https://i.pinimg.com/736x/f2/a2/27/f2a2278fdba6e923af271a063b515a9c.jpg"
+      "offerPrice": 2500,
+      "stock": "",
+      "image": "https://i.pinimg.com/736x/f2/a2/27/f2a2278fdba6e923af271a063b515a9c.jpg",
+      "price": 1200,
+      "description": "A sleek pearl necklace that blends classic beauty with modern simplicity."
     },
     {
-      "id": 3,
+      "id": "10",
       "category": "necklace",
       "name": "Rose Gold Layer Necklace",
       "originalPrice": 1500,
@@ -460,15 +603,15 @@
   ],
   "bracelets": [
     {
-      "id": 1,
+      "id": "1",
       "category": "bracelets",
-      "name": "Pearl Braclets ",
+      "name": "Pearl Bracelets ",
       "originalPrice": 1500,
       "offerPrice": 1200,
       "image": "https://i.pinimg.com/1200x/17/40/65/17406587bde05c16c44f60da41b4f71d.jpg"
     },
     {
-      "id": 2,
+      "id": "2",
       "category": "bracelets",
       "name": "Old Hollywood Dainty Bracelet ",
       "originalPrice": 1500,
@@ -476,15 +619,15 @@
       "image": "https://i.pinimg.com/736x/f4/88/bb/f488bb03ba82b125fea7276eed9b38ef.jpg"
     },
     {
-      "id": 3,
+      "id": "3",
       "category": "bracelets",
-      "name": "Pearl Braclets ",
+      "name": "Pearl Bracelets ",
       "originalPrice": 4000,
       "offerPrice": 3500,
       "image": "https://i.pinimg.com/736x/65/72/b8/6572b868f2b726172d0a7665311abd1c.jpg"
     },
     {
-      "id": 4,
+      "id": "4",
       "category": "bracelets",
       "name": "LapGrown Diamond Bracelets ",
       "originalPrice": 5000,
@@ -492,7 +635,7 @@
       "image": "https://i.pinimg.com/736x/5c/c3/4b/5cc34b31563f889bf10c84dd8b7d7ea7.jpg"
     },
     {
-      "id": 5,
+      "id": "5",
       "category": "bracelets",
       "name": "Diamond Bracelets ",
       "originalPrice": 3000,
@@ -500,12 +643,65 @@
       "image": "https://i.pinimg.com/736x/46/1b/ac/461bac5251af2dd1cd38225cd13c29fb.jpg"
     },
     {
-      "id": 3,
+      "id": "6",
       "category": "bracelets",
-      "name": "Diamond Choker",
-      "originalPrice": 1500,
+      "name": "Silver bouquet Zicron Stone bracelets",
+      "originalPrice": 15000,
+      "offerPrice": 14500,
+      "image": "https://i.pinimg.com/1200x/46/b5/70/46b570430f95b1ac96ed22dc6c44d376.jpg"
+    },
+    {
+      "id": "7",
+      "category": "bracelets",
+      "name": "Rose Gold Bracelets",
+      "originalPrice": 15000,
+      "offerPrice": 14800,
+      "image": "https://i.pinimg.com/736x/38/93/77/389377309d2d9e64d873a74c7e91f5c5.jpg"
+    },
+    {
+      "id": "8",
+      "category": "bracelets",
+      "name": "Rose Gold Bracelets",
+      "originalPrice": 8500,
+      "offerPrice": 7900,
+      "image": "https://i.pinimg.com/736x/71/19/05/711905a3bc6bb7448edc0fc99934a858.jpg"
+    },
+    {
+      "id": "9",
+      "category": "bracelets",
+      "name": "Layerd Bracelets",
+      "originalPrice": 15000,
+      "offerPrice": 14500,
+      "image": "https://i.pinimg.com/736x/af/ba/ba/afbabaa3e30b38ae1c5e78c32d14a747.jpg"
+    },
+    {
+      "id": "10",
+      "category": "bracelets",
+      "name": "Bracelets set",
+      "originalPrice": 5000,
       "offerPrice": 1200,
-      "image": "https://i.pinimg.com/1200x/3c/c8/01/3cc8018a969190475a2d950773f8f0a6.jpg"
+      "image": "https://i.pinimg.com/736x/10/ac/35/10ac35e6da6f3e3fd91b349794d1f945.jpg"
+    },
+    {
+      "id": "11",
+      "category": "bracelets",
+      "name": "Elegant Bracelet",
+      "originalPrice": 8000,
+      "offerPrice": 7800,
+      "image": "https://i.pinimg.com/736x/ec/87/f8/ec87f8846301ce887fa2ba7ebf1c0f60.jpg"
+    },
+    {
+      "id": "1761130923085",
+      "name": "pendent Bracelets",
+      "price": "8000",
+      "originalPrice": "7500",
+      "image": "https://i.pinimg.com/1200x/72/f7/0b/72f70b303e51122691834562b5eda7d8.jpg",
+      "description": "A delicate bracelet adorned with a charming pendant, blending timeless elegance with everyday wear.",
+      "category": "bracelets",
+      "metal": "Rose Gold",
+      "stock": "8",
+      "isActive": true,
+      "createdAt": "2025-10-22T11:02:03.085Z"
     }
   ]
 }

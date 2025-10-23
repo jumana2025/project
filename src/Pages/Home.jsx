@@ -64,7 +64,7 @@ function Home() {
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                                 <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg animate-float">
-                                    <span className="text-sm font-semibold text-gray-800">New Arrival</span>
+                                    <span className="text-sm font-semibold text-pink-400">Coming Soon...</span>
                                 </div>
                             </div>
                             <div className="absolute -z-10 top-4 -left-4 w-24 h-24 bg-gradient-to-r from-amber-200 to-pink-200 rounded-full blur-xl opacity-60 animate-pulse-slow"></div>
@@ -98,8 +98,8 @@ function Home() {
 
                             <div className="pt-6">
                                 <div className="flex items-baseline gap-4 mb-6">
-                                    <span className="text-3xl font-bold text-gray-800">$89.99</span>
-                                    <span className="text-lg text-gray-500 line-through">$129.99</span>
+                                    <span className="text-3xl font-bold text-gray-800">₹ 5000</span>
+                                    <span className="text-lg text-gray-500 line-through">₹ 4500</span>
                                     <span className="px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
                                         30% OFF
                                     </span>
@@ -132,12 +132,12 @@ function Home() {
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                                 <div className="absolute bottom-6 left-6 text-white">
-                                    <h3 className="text-2xl font-bold mb-2">Rings</h3>
+                                    <h3 className="text-2xl font-bold mb-2">Ring</h3>
                                     <p className="text-white/90">Elegant designs</p>
                                 </div>
                             </div>
                             <button
-                                onClick={() => navigate("/rings")}
+                                onClick={() => navigate("/ring")}
                                 className="w-full py-4 bg-gradient-to-r from-gray-800 to-gray-900 text-white font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300 flex items-center justify-center gap-2 group"
                             >
                                 Explore Rings
@@ -180,7 +180,7 @@ function Home() {
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                                 <div className="absolute bottom-6 left-6 text-white">
-                                    <h3 className="text-2xl font-bold mb-2">Necklaces</h3>
+                                    <h3 className="text-2xl font-bold mb-2">Necklace</h3>
                                     <p className="text-white/90">Premium style</p>
                                 </div>
                             </div>
