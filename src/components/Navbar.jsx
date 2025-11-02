@@ -96,18 +96,18 @@ const Navbar = () => {
                     <input
                         type="text"
                         placeholder="Search for products..."
-                        className="border border-gray-300 p-2 rounded-l w-full focus:outline-none focus:ring-2 focus:ring-pink-300"
+                        className="border border-gray-300 p-2 rounded-2xl w-full focus:outline-none focus:ring-2 focus:ring-pink-300"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleEnter}
                     />
-                    <button
+                    {/* <button
                         onClick={handleSearch}
                         className="bg-pink-500 text-white px-4 rounded-r hover:bg-pink-600 flex items-center transition-colors"
                     >
                         <FaSearch />
                         <span className="ml-1">Search</span>
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* Navigation Links */}

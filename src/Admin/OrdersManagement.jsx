@@ -214,20 +214,7 @@ function OrdersManagement() {
                     <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-2">Orders Management</h1>
                     <p className="text-gray-600">Manage and track customer orders</p>
                 </div>
-                <button
-                    onClick={fetchOrders}
-                    disabled={loading}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center"
-                >
-                    {loading ? (
-                        <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Refreshing...
-                        </>
-                    ) : (
-                        'Refresh Orders'
-                    )}
-                </button>
+
             </div>
 
             {/* Statistics Cards */}

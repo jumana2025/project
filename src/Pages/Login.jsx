@@ -1,150 +1,110 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
     const [formData, setFormData] = useState({ email: "", password: "" });
-    const [message, setMessage] = useState("");
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    // Check login status when page loads
+    // ✅ Auto-login if already logged in
     useEffect(() => {
-        const storedUser = localStorage.getItem("currentUser") || localStorage.getItem("user");
+        const storedUser = localStorage.getItem("currentUser");
         if (storedUser) {
-            setIsLoggedIn(true);
             const user = JSON.parse(storedUser);
             redirectUser(user.role);
         }
     }, []);
 
+    // ✅ Input change
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-        setMessage("");
+        setFormData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
     };
 
+    // ✅ Submit handler
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setMessage("");
 
-        if (!formData.email || !formData.password) {
-            setMessage("Email and password are required");
+        const { email, password } = formData;
+
+        if (!email || !password) {
+            toast.warn("Please enter email and password");
             setIsLoading(false);
             return;
         }
 
         try {
-            // Get users from ALL possible sources
-            let users = [];
+            let allUsers = [];
 
-            // 1. Try JSON Server first
+            // 🔹 Try JSON server users
             try {
                 const response = await fetch("http://localhost:5000/users");
                 if (response.ok) {
-                    const serverUsers = await response.json();
-                    users = [...users, ...serverUsers];
-                    console.log("Users from server:", serverUsers);
+                    const data = await response.json();
+                    allUsers = [...allUsers, ...data];
                 }
-            } catch (serverError) {
-                console.log("Server not available");
+            } catch (err) {
+                console.log("⚠️ JSON server not running, using localStorage users only");
             }
 
-            // 2. Try localStorage 'users'
-            try {
-                const localUsers = JSON.parse(localStorage.getItem("users") || "[]");
-                users = [...users, ...localUsers];
-                console.log("Users from localStorage 'users':", localUsers);
-            } catch (error) {
-                console.log("Error reading localStorage users");
-            }
+            // 🔹 Add localStorage users
+            const localUsers = JSON.parse(localStorage.getItem("users") || "[]");
+            allUsers = [...allUsers, ...localUsers];
 
-            // 3. Check if there are any registered users at all
-            if (users.length === 0) {
-                setMessage("No users found. Please register first or add sample users.");
+            // 🔍 Find user
+            const user = allUsers.find(
+                (u) =>
+                    u.email?.toLowerCase() === email.toLowerCase() &&
+                    u.password === password
+            );
+
+            if (!user) {
+                toast.error("Invalid email or password");
                 setIsLoading(false);
                 return;
             }
 
-            console.log("All available users:", users);
+            // ✅ Login successful
+            const userData = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role || "user",
+            };
 
-            // Find user with matching email and password (case insensitive)
-            const user = users.find(u => {
-                const emailMatch = u.email?.toLowerCase().trim() === formData.email.toLowerCase().trim();
-                const passwordMatch = u.password === formData.password;
-                console.log(`Checking user: ${u.email}, email match: ${emailMatch}, password match: ${passwordMatch}`);
-                return emailMatch && passwordMatch;
-            });
+            // ❌ Don't clear all data (keeps wishlist)
+            // localStorage.clear();
 
-            if (user) {
-                console.log("Login successful for user:", user);
+            // ✅ Remove only login-related keys
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("isLoggedIn");
 
-                // Store user data without password for security
-                const userData = {
-                    id: user.id,
-                    email: user.email,
-                    role: user.role || "user",
-                    name: user.name
-                };
+            // ✅ Save user data
+            localStorage.setItem("currentUser", JSON.stringify(userData));
+            localStorage.setItem("isLoggedIn", "true");
 
-                // Save to both currentUser and user for compatibility
-                localStorage.setItem("currentUser", JSON.stringify(userData));
-                localStorage.setItem("user", JSON.stringify(userData));
-                localStorage.setItem("isLoggedIn", "true");
-
-                setIsLoggedIn(true);
-                setMessage("Login Successful!");
-
-                // Redirect based on role
-                redirectUser(userData.role);
-
-            } else {
-                console.log("Login failed - no matching user found");
-                setMessage("Invalid Email or Password. Please check your credentials.");
-
-                // Debug info
-                const foundUserByEmail = users.find(u =>
-                    u.email?.toLowerCase().trim() === formData.email.toLowerCase().trim()
-                );
-
-                if (foundUserByEmail) {
-                    console.log("User found by email but password mismatch");
-                    console.log("Stored password:", foundUserByEmail.password);
-                    console.log("Entered password:", formData.password);
-                } else {
-                    console.log("No user found with this email");
-                    console.log("Available emails:", users.map(u => u.email));
-                }
-            }
-        } catch (err) {
-            console.error("Login error:", err);
-            setMessage("Error logging in. Please try again.");
+            toast.success("🎉 Login successful!");
+            setTimeout(() => redirectUser(userData.role), 1500);
+        } catch (error) {
+            console.error("Login error:", error);
+            toast.error("Something went wrong. Try again.");
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Helper function to redirect users based on role
+    // ✅ Redirect user based on role
     const redirectUser = (role) => {
-        setTimeout(() => {
-            if (role === "admin") {
-                navigate("/admin/products");
-            } else {
-                navigate("/");
-            }
-        }, 1500);
+        if (role === "admin") navigate("/admin/products");
+        else navigate("/");
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("user");
-        localStorage.removeItem("isLoggedIn");
-        setIsLoggedIn(false);
-        setMessage("You have been logged out");
-        navigate("/");
-    };
-
-    // Function to add sample users for testing
+    // ✅ Add sample users (optional for testing)
     const addSampleUsers = () => {
         const sampleUsers = [
             {
@@ -153,7 +113,6 @@ function Login() {
                 email: "admin@example.com",
                 password: "admin123",
                 role: "admin",
-                createdAt: new Date().toISOString()
             },
             {
                 id: (Date.now() + 1).toString(),
@@ -161,153 +120,81 @@ function Login() {
                 email: "user@example.com",
                 password: "user123",
                 role: "user",
-                createdAt: new Date().toISOString()
-            }
+            },
         ];
 
-        // Save to localStorage
-        const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
-        const updatedUsers = [...existingUsers, ...sampleUsers];
-        localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-        // Also try to save to JSON server
-        sampleUsers.forEach(async (user) => {
-            try {
-                await fetch("http://localhost:5000/users", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(user),
-                });
-            } catch (error) {
-                console.log("Could not save to server, using localStorage only");
-            }
-        });
-
-        setMessage("Sample users added! You can now login with: admin@example.com / admin123 or user@example.com / user123");
-    };
-
-    // Function to view all registered users (for debugging)
-    const viewAllUsers = () => {
-        let allUsers = [];
-
-        // Check localStorage
-        try {
-            const localUsers = JSON.parse(localStorage.getItem("users") || "[]");
-            allUsers = [...allUsers, ...localUsers];
-        } catch (error) {
-            console.log("Error reading localStorage users");
-        }
-
-        // Check JSON server
-        try {
-            fetch("http://localhost:5000/users")
-                .then(res => res.json())
-                .then(serverUsers => {
-                    allUsers = [...allUsers, ...serverUsers];
-                    console.log("All registered users:", allUsers);
-                    alert(`Found ${allUsers.length} users:\n${allUsers.map(u => `${u.email} (${u.name})`).join('\n')}`);
-                })
-                .catch(err => {
-                    console.log("Could not fetch from server");
-                    alert(`Found ${allUsers.length} users in localStorage:\n${allUsers.map(u => `${u.email} (${u.name})`).join('\n')}`);
-                });
-        } catch (error) {
-            alert(`Found ${allUsers.length} users in localStorage:\n${allUsers.map(u => `${u.email} (${u.name})`).join('\n')}`);
-        }
+        localStorage.setItem("users", JSON.stringify(sampleUsers));
+        toast.success("✅ Sample users added!");
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            {!isLoggedIn ? (
-                <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-                    <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
+            <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+                <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
 
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="Enter your email"
+                            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-pink-400"
+                        />
+                    </div>
 
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Email
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Enter your email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-pink-400"
-                                required
-                            />
-                        </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Enter your password"
+                            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-pink-400"
+                        />
+                    </div>
 
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="Enter your password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-pink-400"
-                                required
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className={`w-full py-3 rounded mt-4 ${isLoading
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className={`w-full py-3 rounded mt-4 ${isLoading
                                 ? "bg-gray-400 cursor-not-allowed"
                                 : "bg-pink-500 hover:bg-pink-600"
-                                } text-white transition-colors`}
-                        >
-                            {isLoading ? "Logging in..." : "Login"}
-                        </button>
-
-                        {message && (
-                            <p
-                                className={`mt-3 text-center font-medium ${message.includes("Successful") || message.includes("added")
-                                    ? "text-green-600"
-                                    : "text-red-600"
-                                    }`}
-                            >
-                                {message}
-                            </p>
-                        )}
-
-                        <p className="text-center mt-4 text-sm text-gray-600">
-                            Don't have an account?{" "}
-                            <NavLink
-                                to="/register"
-                                className="text-pink-500 hover:underline font-medium"
-                            >
-                                Sign Up
-                            </NavLink>
-                        </p>
-                    </form>
-
-
-                </div>
-            ) : (
-                // Logout Section (when already logged in)
-                <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg text-center">
-                    <h2 className="text-2xl font-semibold mb-4 text-green-600">
-                        ✅ Login Successful!
-                    </h2>
-                    <p className="mb-6 text-gray-600">
-                        You will be redirected shortly...
-                    </p>
-                    <button
-                        onClick={handleLogout}
-                        className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition-colors"
+                            } text-white`}
                     >
-                        Logout Now
+                        {isLoading ? "Logging in..." : "Login"}
                     </button>
-                </div>
-            )}
+
+                    <p className="text-center mt-4 text-sm text-gray-600">
+                        Don’t have an account?{" "}
+                        <NavLink
+                            to="/register"
+                            className="text-pink-500 hover:underline font-medium"
+                        >
+                            Sign Up
+                        </NavLink>
+                    </p>
+
+                    <div className="text-center mt-4">
+                        <button
+                            type="button"
+                            onClick={addSampleUsers}
+                            className="text-blue-500 underline text-sm"
+                        >
+                            Add Sample Users
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
         </div>
     );
 }

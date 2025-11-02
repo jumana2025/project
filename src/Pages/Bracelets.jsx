@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import axios from "axios";
 import { FaHeart } from "react-icons/fa";
 import { CartContext } from "../context/CartContext";
@@ -11,9 +11,15 @@ function Bracelet() {
     const [filteredBracelets, setFilteredBracelets] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const [priceRange, setPriceRange] = useState("all");
-    const [sortOption, setSortOption] = useState("default");
-    const [currentPage, setCurrentPage] = useState(1);
+    const [priceRange, setPriceRange] = useState(() => {
+        try { return localStorage.getItem('bracelets.priceRange') || 'all'; } catch (e) { return 'all'; }
+    });
+    const [sortOption, setSortOption] = useState(() => {
+        try { return localStorage.getItem('bracelets.sortOption') || 'default'; } catch (e) { return 'default'; }
+    });
+    const [currentPage, setCurrentPage] = useState(() => {
+        try { return Number(localStorage.getItem('bracelets.currentPage')) || 1; } catch (e) { return 1; }
+    });
     const [selectedProduct, setSelectedProduct] = useState(null);
     const productsPerPage = 8;
 
@@ -36,6 +42,8 @@ function Bracelet() {
             });
     }, []);
 
+    const didMountRef = useRef(false);
+
     // ✅ Filter & Sort
     useEffect(() => {
         let temp = [...bracelets];
@@ -54,8 +62,17 @@ function Bracelet() {
         else if (sortOption === "name-az") temp.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
         setFilteredBracelets(temp);
-        setCurrentPage(1);
+        if (didMountRef.current) {
+            setCurrentPage(1);
+        } else {
+            didMountRef.current = true;
+        }
     }, [priceRange, sortOption, bracelets]);
+
+    // Persist filters/sort/page for bracelets
+    useEffect(() => { try { localStorage.setItem('bracelets.priceRange', priceRange); } catch (e) { } }, [priceRange]);
+    useEffect(() => { try { localStorage.setItem('bracelets.sortOption', sortOption); } catch (e) { } }, [sortOption]);
+    useEffect(() => { try { localStorage.setItem('bracelets.currentPage', String(currentPage)); } catch (e) { } }, [currentPage]);
 
     // Pagination
     const indexOfLast = currentPage * productsPerPage;

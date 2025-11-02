@@ -5,45 +5,40 @@ export const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
     const [orders, setOrders] = useState([]);
-    const baseURL = "http://localhost:5000/orders"; // ✅ JSON Server URL
+    const baseURL = "http://localhost:5000/orders"; // JSON Server / Backend URL
 
-    // ✅ Load all orders initially (optional — mainly for admin or caching)
+    // ✅ Fetch existing orders
     useEffect(() => {
-        const fetchAllOrders = async () => {
+        const fetchOrders = async () => {
             try {
                 const res = await axios.get(baseURL);
                 setOrders(res.data);
-            } catch (error) {
-                console.error("Failed to load orders:", error);
-                setOrders([]);
+            } catch (err) {
+                console.error("Error fetching orders:", err);
             }
         };
-
-        fetchAllOrders();
+        fetchOrders();
     }, []);
 
-    // ✅ Add new order (POST to JSON Server)
-    const addOrder = async (order) => {
+    // ✅ Add new order
+    const addOrder = async (orderData) => {
         try {
-            const res = await axios.post(baseURL, order);
+            const res = await axios.post(baseURL, orderData);
             setOrders((prev) => [...prev, res.data]);
             return res.data;
-        } catch (error) {
-            console.error("Error adding order:", error);
-            throw error;
+        } catch (err) {
+            console.error("Error adding order:", err);
+            throw err;
         }
     };
 
-    // ✅ Get orders for the currently logged-in user (from JSON Server)
-    const getUserOrders = async () => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) return [];
-
+    // ✅ Get orders for logged-in user
+    const getUserOrders = async (email) => {
         try {
-            const res = await axios.get(`${baseURL}?userEmail=${user.email}`);
+            const res = await axios.get(`${baseURL}?userEmail=${email}`);
             return res.data;
-        } catch (error) {
-            console.error("Failed to fetch user orders:", error);
+        } catch (err) {
+            console.error("Error fetching user orders:", err);
             return [];
         }
     };

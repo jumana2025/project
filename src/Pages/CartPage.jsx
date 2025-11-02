@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // ✅ Import toast
 
 function CartPage() {
     const { cart = [], removeFromCart, updateQuantity } = useContext(CartContext);
@@ -9,16 +10,18 @@ function CartPage() {
 
     // ✅ Login check on page load
     useEffect(() => {
-        const user = localStorage.getItem("user"); // or use AuthContext if available
+        const user = localStorage.getItem("user");
         if (!user) {
-            alert("Please login to access your cart.");
+            toast.warning("Please login to access your cart!");
             navigate("/login");
         }
     }, [navigate]);
 
     const toggleSelect = (id) => {
         setSelectedItems(prev =>
-            prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]
+            prev.includes(id)
+                ? prev.filter(itemId => itemId !== id)
+                : [...prev, id]
         );
     };
 
@@ -34,7 +37,7 @@ function CartPage() {
 
     const handleBuy = () => {
         if (selectedItems.length === 0) {
-            alert("Please select items to purchase");
+            toast.info("Please select items to purchase");
             return;
         }
 
@@ -46,6 +49,8 @@ function CartPage() {
 
         selectedItems.forEach(id => removeFromCart(id));
         setSelectedItems([]);
+
+        toast.success("Proceeding to payment...");
         navigate("/payment", { state: { items: purchasedItems, total: totalAmount } });
     };
 
@@ -63,7 +68,10 @@ function CartPage() {
             <h1 className="text-3xl font-bold mb-6 text-center">Your Cart</h1>
 
             {cart.map(item => (
-                <div key={item.id} className="flex justify-between items-center mb-4 border-b pb-4">
+                <div
+                    key={item.id}
+                    className="flex justify-between items-center mb-4 border-b pb-4"
+                >
                     <div className="flex items-center space-x-4">
                         <input
                             type="checkbox"
@@ -71,14 +79,22 @@ function CartPage() {
                             onChange={() => toggleSelect(item.id)}
                             className="w-4 h-4"
                         />
-                        <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded" />
+                        <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-20 h-20 object-cover rounded"
+                        />
                         <div>
                             <p className="font-semibold">{item.name}</p>
-                            <p className="text-gray-600">₹{Number(item.offerPrice).toFixed(2)}</p>
+                            <p className="text-gray-600">
+                                ₹{Number(item.offerPrice).toFixed(2)}
+                            </p>
 
                             <div className="flex items-center space-x-2 mt-2">
                                 <button
-                                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                    onClick={() =>
+                                        handleQuantityChange(item.id, item.quantity - 1)
+                                    }
                                     className="bg-gray-200 px-2 py-1 rounded"
                                     disabled={item.quantity <= 1}
                                 >
@@ -86,7 +102,9 @@ function CartPage() {
                                 </button>
                                 <span>{item.quantity}</span>
                                 <button
-                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                    onClick={() =>
+                                        handleQuantityChange(item.id, item.quantity + 1)
+                                    }
                                     className="bg-gray-200 px-2 py-1 rounded"
                                 >
                                     +
@@ -100,7 +118,10 @@ function CartPage() {
                             ₹{(Number(item.offerPrice) * Number(item.quantity)).toFixed(2)}
                         </p>
                         <button
-                            onClick={() => removeFromCart(item.id)}
+                            onClick={() => {
+                                removeFromCart(item.id);
+                                toast.error(`${item.name} removed from cart`);
+                            }}
                             className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-500 mt-2"
                         >
                             Remove
@@ -118,8 +139,8 @@ function CartPage() {
                         onClick={handleBuy}
                         disabled={selectedItems.length === 0}
                         className={`px-6 py-3 rounded text-white font-semibold ${selectedItems.length > 0
-                            ? "bg-blue-600 hover:bg-blue-500"
-                            : "bg-gray-400 cursor-not-allowed"
+                                ? "bg-blue-600 hover:bg-blue-500"
+                                : "bg-gray-400 cursor-not-allowed"
                             }`}
                     >
                         Buy Selected ({selectedItems.length} items)

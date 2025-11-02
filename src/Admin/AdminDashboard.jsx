@@ -1,4 +1,4 @@
-// components/Admin/AdminDashboard.jsx
+
 import React from "react";
 import { Routes, Route, Navigate, useNavigate, NavLink } from "react-router-dom";
 import DashboardHome from "./DashboardHome";
@@ -11,8 +11,17 @@ function AdminDashboard() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("adminToken");
+
+        try {
+            localStorage.removeItem("user");
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("adminToken");
+        } catch (e) {
+
+        }
+
+
         navigate("/login");
     };
 
@@ -26,9 +35,9 @@ function AdminDashboard() {
 
     return (
         <div className="flex min-h-screen bg-gray-100">
-            {/* Sidebar */}
+
             <aside className="w-64 bg-white shadow-lg flex flex-col sticky top-0 h-screen">
-                {/* Header */}
+
                 <div className="p-6 border-b border-gray-200">
                     <h1 className="text-2xl font-bold text-gray-800">Admin Panel</h1>
                     <p className="text-sm text-gray-600 mt-1">Store Management</p>
@@ -57,9 +66,9 @@ function AdminDashboard() {
                 <div className="p-4 border-t border-gray-200">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-center p-3 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg transition-colors duration-200 font-medium"
+                        className="w-full flex items-center justify-center p-3 bg-pink-400 text-black-700 hover:bg-pink-500 rounded-lg transition-colors duration-200 font-medium"
                     >
-                        <span className="mr-2">🚪</span>
+
                         Logout
                     </button>
                 </div>

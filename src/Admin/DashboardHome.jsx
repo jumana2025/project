@@ -1,5 +1,6 @@
 // components/Admin/DashboardHome.jsx
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Performance Metric Component
 function PerformanceMetric({ label, value, color, description }) {
@@ -609,6 +610,49 @@ function DashboardHome() {
     });
 
     const [hoveredCategory, setHoveredCategory] = useState(null);
+    const [allProducts, setAllProducts] = useState([]);
+
+    // Try to fetch products from the same endpoints ProductsManagement uses so dashboard shows same data
+    useEffect(() => {
+        let mounted = true;
+        const fetchAll = async () => {
+            const endpoints = [
+                'http://localhost:5000/ring',
+                'http://localhost:5000/necklace',
+                'http://localhost:5000/bracelets'
+            ];
+            try {
+                const results = await Promise.all(endpoints.map(async (url) => {
+                    try {
+                        const res = await fetch(url);
+                        const data = await res.json();
+                        return Array.isArray(data) ? data : data.products || [];
+                    } catch (e) {
+                        return [];
+                    }
+                }));
+
+                const flat = results.flat().map(p => ({
+                    id: p.id || `${p.category || 'prod'}-${Date.now()}-${Math.random()}`,
+                    name: p.name || p.title || 'Unnamed',
+                    description: p.description || p.desc || '',
+                    category: (p.category || '').toString().toLowerCase(),
+                    price: Number(p.price) || 0,
+                    offerPrice: Number(p.offerPrice) || Number(p.discountPrice) || 0,
+                    stock: Number(p.stock) || 0,
+                    image: p.image || '',
+                    isActive: p.isActive !== undefined ? p.isActive : true,
+                    createdAt: p.createdAt || new Date().toISOString()
+                }));
+
+                if (mounted && flat.length) setAllProducts(flat);
+            } catch (err) {
+                // ignore fetch errors; we'll fall back to localStorage
+            }
+        };
+        fetchAll();
+        return () => { mounted = false; };
+    }, []);
 
     // Persist selected view state to localStorage so refresh keeps the same page/view
     useEffect(() => {
@@ -637,10 +681,50 @@ function DashboardHome() {
         loadDashboardData();
     }, []);
 
-    const loadDashboardData = () => {
+    const loadDashboardData = async () => {
         try {
-            // Get real data from localStorage with error handling
-            const products = JSON.parse(localStorage.getItem("products") || "[]");
+            // First try to fetch product lists from the server; fall back to localStorage
+            let products = [];
+            try {
+                const endpoints = [
+                    'http://localhost:5000/ring',
+                    'http://localhost:5000/necklace',
+                    'http://localhost:5000/bracelets'
+                ];
+                const results = await Promise.all(endpoints.map(async (url) => {
+                    try {
+                        const res = await fetch(url);
+                        if (!res.ok) return [];
+                        const data = await res.json();
+                        return Array.isArray(data) ? data : data.products || [];
+                    } catch (e) {
+                        return [];
+                    }
+                }));
+                const flat = results.flat();
+                if (flat && flat.length) {
+                    products = flat.map(p => ({
+                        id: p.id || `${p.category || 'prod'}-${Date.now()}-${Math.random()}`,
+                        name: p.name || p.title || 'Unnamed',
+                        description: p.description || p.desc || '',
+                        category: (p.category || '').toString().toLowerCase(),
+                        price: Number(p.price) || 0,
+                        offerPrice: Number(p.offerPrice) || Number(p.discountPrice) || 0,
+                        stock: Number(p.stock) || 0,
+                        image: p.image || '',
+                        isActive: p.isActive !== undefined ? p.isActive : true,
+                        createdAt: p.createdAt || new Date().toISOString()
+                    }));
+                }
+            } catch (err) {
+                // ignore fetch errors
+            }
+
+            // fallback to localStorage if server returned nothing
+            if (!products || !products.length) {
+                products = JSON.parse(localStorage.getItem("products") || "[]");
+            }
+
             const orders = JSON.parse(localStorage.getItem("orders") || "[]");
             const users = JSON.parse(localStorage.getItem("users") || "[]");
 
@@ -835,7 +919,8 @@ function DashboardHome() {
     // Get category data with order information
     const getCategoryData = () => {
         try {
-            const products = JSON.parse(localStorage.getItem("products") || "[]");
+            // prefer fetched products when available
+            const products = (allProducts && allProducts.length) ? allProducts : JSON.parse(localStorage.getItem("products") || "[]");
             const orders = JSON.parse(localStorage.getItem("orders") || "[]");
 
             // Get all ordered product IDs
@@ -843,10 +928,13 @@ function DashboardHome() {
                 (order.items || []).map(item => item.productId || item.id)
             ).filter(Boolean);
 
-            const rings = products.filter(p => p.category === 'ring');
-            const necklaces = products.filter(p => p.category === 'necklace');
-            const bracelets = products.filter(p => p.category === 'bracelets');
-            const other = products.filter(p => !['ring', 'necklace', 'bracelets'].includes(p.category));
+            // Normalize category values (accept singular/plural)
+            const normalize = (c) => (c || '').toString().toLowerCase();
+
+            const rings = products.filter(p => ['ring', 'rings'].includes(normalize(p.category)));
+            const necklaces = products.filter(p => ['necklace', 'necklaces'].includes(normalize(p.category)));
+            const bracelets = products.filter(p => ['bracelet', 'bracelets'].includes(normalize(p.category)));
+            const other = products.filter(p => !['ring', 'rings', 'necklace', 'necklaces', 'bracelet', 'bracelets'].includes(normalize(p.category)));
 
             // Calculate ordered products for each category
             const getOrderedProducts = (categoryProducts) => {
@@ -891,14 +979,18 @@ function DashboardHome() {
     const getCategoryStockData = (category) => {
         const categoryData = getCategoryData();
 
-        const categoryMap = {
-            'ring': categoryData.rings.products,
-            'necklace': categoryData.necklaces.products,
-            'bracelets': categoryData.bracelets.products,
-            'other': categoryData.other.products
+        const map = {
+            ring: 'rings',
+            rings: 'rings',
+            necklace: 'necklaces',
+            necklaces: 'necklaces',
+            bracelet: 'bracelets',
+            bracelets: 'bracelets',
+            other: 'other'
         };
 
-        return categoryMap[category] || [];
+        const key = map[category] || 'other';
+        return (categoryData[key] && categoryData[key].products) ? categoryData[key].products : [];
     };
 
     const formatDate = (dateString) => {
@@ -925,8 +1017,41 @@ function DashboardHome() {
         }).format(amount || 0);
     };
 
+    const navigate = useNavigate();
+
     const handleCategoryClick = (category) => {
-        setSelectedCategory(selectedCategory === category ? null : category);
+        // toggle local selectedCategory state
+        const newSelected = selectedCategory === category ? null : category;
+        setSelectedCategory(newSelected);
+
+        // map to plural category keys used by ProductsManagement
+        const mapToProductsCategory = (cat) => {
+            if (!cat) return 'all';
+            switch (cat) {
+                case 'ring':
+                case 'rings':
+                    return 'rings';
+                case 'necklace':
+                case 'necklaces':
+                    return 'necklaces';
+                case 'bracelet':
+                case 'bracelets':
+                    return 'bracelets';
+                default:
+                    return 'all';
+            }
+        };
+
+        // if a category was selected, persist mapped category and navigate to products page
+        try {
+            if (newSelected) {
+                const mapped = mapToProductsCategory(newSelected);
+                localStorage.setItem('admin.products.category', mapped);
+                navigate('/admin/products');
+            }
+        } catch (e) {
+            // ignore storage/navigation errors
+        }
     };
 
     const handleCategoryHover = (category) => {
@@ -959,15 +1084,9 @@ function DashboardHome() {
             </div>
 
             {/* Statistics Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 lg:mb-8">
-                <StatCard
-                    title="Total Revenue"
-                    value={formatCurrency(stats.totalRevenue)}
-                    icon="₹"
-                    color="green"
-                    growth={growth.revenueGrowth}
-                    description="All-time sales"
-                />
+            <div className="grid grid-cols-2 gap-4 max-w-2xl mb-8 ">
+
+
                 <StatCard
                     title="Total Orders"
                     value={stats.totalOrders}
@@ -975,6 +1094,14 @@ function DashboardHome() {
                     color="blue"
                     growth={growth.ordersGrowth}
                     description={`${stats.completedOrders} completed`}
+                />
+                <StatCard
+                    title="Total Revenue"
+                    value={formatCurrency(stats.totalRevenue)}
+                    icon="₹"
+                    color="green"
+                    growth={growth.revenueGrowth}
+                    description="All-time sales"
                 />
                 <StatCard
                     title="Total Products"
@@ -995,10 +1122,17 @@ function DashboardHome() {
             </div>
 
             {/* Charts Section */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6 mb-6 lg:mb-8">
+            <div className="grid grid-cols-3 xl:grid-cols-2 gap-4 lg:gap-6 mb-6 rg:mb-8">
+                {/* Order Status Chart */}
+                <div className="bg-white rounded-rg shadow p-4 rg:p-6">
+                    <h3 className="text-lg lg:text-xl font-semibold text-gray-800 mb-4 lg:mb-6">Order Status</h3>
+                    <div className="h-48 lg:h-64">
+                        <SimplePieChart data={getOrderStatusData()} />
+                    </div>
+                </div>
                 {/* Revenue Bar Chart with time range controls */}
-                <div className="bg-white rounded-lg shadow p-4 lg:p-6">
-                    <div className="flex items-center justify-between mb-4 lg:mb-6">
+                <div className="bg-white rounded-rg shadow p-4 rg:p-6">
+                    <div className="flex items-center justify-between mb-4 rg:mb-6">
                         <h3 className="text-lg lg:text-xl font-semibold text-gray-800">Revenue</h3>
                         <div className="flex items-center space-x-2">
                             <button
@@ -1021,18 +1155,10 @@ function DashboardHome() {
                             </button>
                         </div>
                     </div>
-                    <div className="h-48 lg:h-64">
+                    <div className="h-48 rg:h-64">
                         {selectedTimeRange === 'day' && <BarChart data={getDailyRevenueData(7)} height={140} />}
                         {selectedTimeRange === 'week' && <BarChart data={getWeeklyRevenueData(8)} height={140} />}
                         {selectedTimeRange === 'month' && <BarChart data={getMonthlyRevenueData(6)} height={140} />}
-                    </div>
-                </div>
-
-                {/* Order Status Chart */}
-                <div className="bg-white rounded-lg shadow p-4 lg:p-6">
-                    <h3 className="text-lg lg:text-xl font-semibold text-gray-800 mb-4 lg:mb-6">Order Status</h3>
-                    <div className="h-48 lg:h-64">
-                        <SimplePieChart data={getOrderStatusData()} />
                     </div>
                 </div>
             </div>
@@ -1065,6 +1191,7 @@ function DashboardHome() {
                 </div>
             </div>
 
+
             {/* Store Performance - Static Metrics */}
             <div className="bg-white rounded-lg shadow p-4 lg:p-6 mb-6 lg:mb-8">
                 <h3 className="text-lg lg:text-xl font-semibold text-gray-800 mb-4 lg:mb-6">Store Performance</h3>
@@ -1090,6 +1217,7 @@ function DashboardHome() {
                 </div>
             </div>
 
+
             {/* Recent Activity Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                 {/* Recent Orders */}
@@ -1106,7 +1234,7 @@ function DashboardHome() {
                 <QuickStat value={stats.activeUsers} label="Active Users" color="blue" />
                 <QuickStat value={stats.lowStockProducts} label="Low Stock Items" color="red" />
             </div>
-        </div>
+        </div >
     );
 }
 

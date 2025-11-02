@@ -1,8 +1,9 @@
+// src/App.jsx
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -18,7 +19,6 @@ import PaymentPage from "./Pages/PaymentPage";
 import SearchPage from "./Pages/SearchPage";
 import Products from "./Pages/Products";
 import OrdersPage from "./Pages/OrderPage";
-
 import AdminDashboard from "./Admin/AdminDashboard";
 
 import { CartProvider } from "./context/CartContext";
@@ -26,56 +26,52 @@ import { WishlistProvider } from "./context/WishlistContext";
 import { OrderProvider } from "./context/OrderContext";
 
 function App() {
-  const AdminRoute = ({ element }) => {
-    const currentUser = JSON.parse(localStorage.getItem("user")) || {};
-    return currentUser.role === "admin" ? element : <Navigate to="/" />;
-  };
-
   return (
     <CartProvider>
       <WishlistProvider>
         <OrderProvider>
           <Router>
+            {/* ✅ ToastContainer must be OUTSIDE <Routes> */}
             <ToastContainer
               position="top-right"
-              autoClose={3000}
+              autoClose={2000}
               hideProgressBar={false}
               newestOnTop={false}
               closeOnClick
               pauseOnHover
               draggable
+              theme="colored"
             />
 
+            <Routes>
+              {/* ✅ Protected Admin Route */}
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            <RouteConditionalRenderer />
+              {/* ✅ Public Routes */}
+              <Route
+                path="/*"
+                element={
+                  <>
+                    <Navbar />
+                    <MainAppRoutes />
+                    <Footer />
+                  </>
+                }
+              />
+            </Routes>
           </Router>
         </OrderProvider>
       </WishlistProvider>
     </CartProvider>
   );
 }
-
-
-function RouteConditionalRenderer() {
-  const location = window.location.pathname;
-
-  if (location.startsWith('/admin')) {
-    return (
-      <Routes>
-        <Route path="/admin/*" element={<AdminDashboard />} />
-      </Routes>
-    );
-  }
-
-  return (
-    <>
-      <Navbar />
-      <MainAppRoutes />
-      <Footer />
-    </>
-  );
-}
-
 
 function MainAppRoutes() {
   return (

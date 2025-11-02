@@ -10,9 +10,15 @@ function Necklace() {
     const [necklaces, setNecklaces] = useState([]);
     const [filteredNecklaces, setFilteredNecklaces] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [priceRange, setPriceRange] = useState("all");
-    const [sortOption, setSortOption] = useState("default");
-    const [currentPage, setCurrentPage] = useState(1);
+    const [priceRange, setPriceRange] = useState(() => {
+        try { return localStorage.getItem('necklaces.priceRange') || 'all'; } catch (e) { return 'all'; }
+    });
+    const [sortOption, setSortOption] = useState(() => {
+        try { return localStorage.getItem('necklaces.sortOption') || 'default'; } catch (e) { return 'default'; }
+    });
+    const [currentPage, setCurrentPage] = useState(() => {
+        try { return Number(localStorage.getItem('necklaces.currentPage')) || 1; } catch (e) { return 1; }
+    });
     const [selectedProduct, setSelectedProduct] = useState(null);
     const productsPerPage = 8;
 
@@ -56,6 +62,11 @@ function Necklace() {
         setFilteredNecklaces(temp);
         setCurrentPage(1);
     }, [priceRange, sortOption, necklaces]);
+
+    // Persist filters/sort/page for necklaces
+    useEffect(() => { try { localStorage.setItem('necklaces.priceRange', priceRange); } catch (e) { } }, [priceRange]);
+    useEffect(() => { try { localStorage.setItem('necklaces.sortOption', sortOption); } catch (e) { } }, [sortOption]);
+    useEffect(() => { try { localStorage.setItem('necklaces.currentPage', String(currentPage)); } catch (e) { } }, [currentPage]);
 
     // ✅ Pagination
     const indexOfLast = currentPage * productsPerPage;

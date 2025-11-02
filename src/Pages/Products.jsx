@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import axios from "axios";
 import { FaHeart } from "react-icons/fa";
 import { CartContext } from "../context/CartContext";
@@ -11,11 +11,19 @@ function Products() {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const [categoryFilter, setCategoryFilter] = useState("all");
-    const [priceRange, setPriceRange] = useState("all");
-    const [sortOption, setSortOption] = useState("default");
+    const [categoryFilter, setCategoryFilter] = useState(() => {
+        try { return localStorage.getItem('products.categoryFilter') || 'all'; } catch (e) { return 'all'; }
+    });
+    const [priceRange, setPriceRange] = useState(() => {
+        try { return localStorage.getItem('products.priceRange') || 'all'; } catch (e) { return 'all'; }
+    });
+    const [sortOption, setSortOption] = useState(() => {
+        try { return localStorage.getItem('products.sortOption') || 'default'; } catch (e) { return 'default'; }
+    });
 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(() => {
+        try { return Number(localStorage.getItem('products.currentPage')) || 1; } catch (e) { return 1; }
+    });
     const productsPerPage = 8;
 
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -44,6 +52,8 @@ function Products() {
     }, []);
 
     // Filters & sorting
+    const didMountRef = useRef(false);
+
     useEffect(() => {
         let temp = [...products];
 
@@ -63,8 +73,18 @@ function Products() {
         else if (sortOption === "name-az") temp.sort((a, b) => (a.name || a.title).localeCompare(b.name || b.title));
 
         setFilteredProducts(temp);
-        setCurrentPage(1);
+        if (didMountRef.current) {
+            setCurrentPage(1);
+        } else {
+            didMountRef.current = true;
+        }
     }, [categoryFilter, priceRange, sortOption, products]);
+
+    // Persist filter/sort/page so refresh keeps the view
+    useEffect(() => { try { localStorage.setItem('products.categoryFilter', categoryFilter); } catch (e) { } }, [categoryFilter]);
+    useEffect(() => { try { localStorage.setItem('products.priceRange', priceRange); } catch (e) { } }, [priceRange]);
+    useEffect(() => { try { localStorage.setItem('products.sortOption', sortOption); } catch (e) { } }, [sortOption]);
+    useEffect(() => { try { localStorage.setItem('products.currentPage', String(currentPage)); } catch (e) { } }, [currentPage]);
 
     // Pagination
     const indexOfLast = currentPage * productsPerPage;

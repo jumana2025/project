@@ -11,7 +11,7 @@ const SearchPage = () => {
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        const q = (params.get("q") || "").trim(); // remove extra spaces
+        const q = (params.get("q") || "").trim();
         setQuery(q);
 
         if (q === "") {
@@ -22,7 +22,7 @@ const SearchPage = () => {
 
         setLoading(true);
 
-        // Make sure all URLs match your JSON server endpoints
+
         const urls = [
 
             "http://localhost:5000/ring",
@@ -33,10 +33,10 @@ const SearchPage = () => {
 
         Promise.all(urls.map(url => axios.get(url).catch(() => ({ data: [] }))))
             .then(responses => {
-                // Flatten all products
+
                 const allProducts = responses.flatMap(res => res.data || []);
 
-                // Filter by name/title (case-insensitive)
+
                 const filtered = allProducts.filter(item => {
                     const name = item.name || item.title || "";
                     return name.toLowerCase().includes(q.toLowerCase());
@@ -60,9 +60,9 @@ const SearchPage = () => {
                 <p>No products found.</p>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {results.map(product => (
+                    {results.map((product, idx) => (
                         <div
-                            key={product.id}
+                            key={`${product.id ?? product._id ?? idx}-${idx}`}
                             className="border rounded p-4 shadow hover:shadow-lg transition"
                         >
                             <img
