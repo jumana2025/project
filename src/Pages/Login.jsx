@@ -1,19 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CartContext } from "../context/CartContext";
+import { WishlistContext } from "../context/WishlistContext";
 
 function Login() {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
+    // Get context functions for updating user state
+    const { updateUser: updateCartUser } = useContext(CartContext);
+    const { updateUser: updateWishlistUser } = useContext(WishlistContext);
+
     // ✅ Auto-login if already logged in
     useEffect(() => {
         const storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const user = JSON.parse(storedUser);
-            redirectUser(user.role);
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+        if (storedUser && isLoggedIn === "true") {
+            try {
+                const user = JSON.parse(storedUser);
+                redirectUser(user.role);
+            } catch (error) {
+                console.error("Error parsing stored user:", error);
+                // Clear invalid data
+                localStorage.removeItem("currentUser");
+                localStorage.removeItem("isLoggedIn");
+            }
         }
     }, []);
 
@@ -71,28 +86,29 @@ function Login() {
 
             // ✅ Login successful
             const userData = {
-                id: user.id,
+                id: user.id || user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role || "user",
             };
 
-            // ❌ Don't clear all data (keeps wishlist)
-            // localStorage.clear();
-
-            // ✅ Remove only login-related keys
-            localStorage.removeItem("currentUser");
-            localStorage.removeItem("isLoggedIn");
-
             // ✅ Save user data
             localStorage.setItem("currentUser", JSON.stringify(userData));
             localStorage.setItem("isLoggedIn", "true");
 
+            // ✅ Update context providers with user data
+            if (updateCartUser) updateCartUser(userData);
+            if (updateWishlistUser) updateWishlistUser(userData);
+
             toast.success("🎉 Login successful!");
+
+            // Clear form
+            setFormData({ email: "", password: "" });
+
             setTimeout(() => redirectUser(userData.role), 1500);
         } catch (error) {
             console.error("Login error:", error);
-            toast.error("Something went wrong. Try again.");
+            toast.error("Something went wrong. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -100,8 +116,11 @@ function Login() {
 
     // ✅ Redirect user based on role
     const redirectUser = (role) => {
-        if (role === "admin") navigate("/admin/products");
-        else navigate("/");
+        if (role === "admin") {
+            navigate("/admin/products");
+        } else {
+            navigate("/");
+        }
     };
 
     // ✅ Add sample users (optional for testing)
@@ -123,8 +142,18 @@ function Login() {
             },
         ];
 
-        localStorage.setItem("users", JSON.stringify(sampleUsers));
-        toast.success("✅ Sample users added!");
+        // Get existing users to avoid duplicates
+        const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
+        const newUsers = sampleUsers.filter(
+            newUser => !existingUsers.some(existing => existing.email === newUser.email)
+        );
+
+        if (newUsers.length > 0) {
+            localStorage.setItem("users", JSON.stringify([...existingUsers, ...newUsers]));
+            toast.success(`✅ ${newUsers.length} sample user(s) added!`);
+        } else {
+            toast.info("Sample users already exist!");
+        }
     };
 
     return (
@@ -143,7 +172,8 @@ function Login() {
                             value={formData.email}
                             onChange={handleChange}
                             placeholder="Enter your email"
-                            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-pink-400"
+                            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
+                            required
                         />
                     </div>
 
@@ -157,23 +187,24 @@ function Login() {
                             value={formData.password}
                             onChange={handleChange}
                             placeholder="Enter your password"
-                            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-pink-400"
+                            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
+                            required
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className={`w-full py-3 rounded mt-4 ${isLoading
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-pink-500 hover:bg-pink-600"
+                        className={`w-full py-3 rounded mt-4 font-medium transition-colors ${isLoading
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-pink-500 hover:bg-pink-600"
                             } text-white`}
                     >
                         {isLoading ? "Logging in..." : "Login"}
                     </button>
 
                     <p className="text-center mt-4 text-sm text-gray-600">
-                        Don’t have an account?{" "}
+                        Don't have an account?{" "}
                         <NavLink
                             to="/register"
                             className="text-pink-500 hover:underline font-medium"
@@ -182,20 +213,22 @@ function Login() {
                         </NavLink>
                     </p>
 
-                    <div className="text-center mt-4">
-                        <button
-                            type="button"
-                            onClick={addSampleUsers}
-                            className="text-blue-500 underline text-sm"
-                        >
-                            Add Sample Users
-                        </button>
-                    </div>
-                </form>
-            </div>
 
-            <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
-        </div>
+
+
+
+                </form>
+            </div >
+
+            <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                hideProgressBar={false}
+                closeOnClick
+                pauseOnHover
+                theme="light"
+            />
+        </div >
     );
 }
 

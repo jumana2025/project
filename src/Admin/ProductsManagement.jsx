@@ -6,6 +6,9 @@ import {
     FaToggleOn,
     FaPlus,
     FaSearch,
+    FaTimes,
+    FaRecycle,
+    FaEyeSlash,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -31,11 +34,11 @@ const productAPI = {
                         image:
                             item.image ||
                             item.img ||
-                            item.imageURL ||
                             "https://via.placeholder.com/100x100.png?text=No+Image",
                         originalPrice: item.originalPrice || item.price || 0,
-                        offerPrice: item.offerPrice || item.discountPrice || "",
+                        offerPrice: item.offerPrice || "",
                         active: item.active ?? true,
+                        deleted: false, // ✅ default not deleted
                     }));
                 })
             );
@@ -49,10 +52,15 @@ const productAPI = {
 
 function ProductsManagement() {
     const [products, setProducts] = useState([]);
-    const [filterCategory, setFilterCategory] = useState("all");
-    const [searchTerm, setSearchTerm] = useState("");
+    const [filterCategory, setFilterCategory] = useState(
+        localStorage.getItem("filterCategory") || "all"
+    );
+    const [searchTerm, setSearchTerm] = useState(
+        localStorage.getItem("searchTerm") || ""
+    );
     const [showModal, setShowModal] = useState(false);
     const [editProduct, setEditProduct] = useState(null);
+    const [showDeleted, setShowDeleted] = useState(false); // ✅ Toggle deleted view
     const [formData, setFormData] = useState({
         name: "",
         category: "rings",
@@ -61,7 +69,7 @@ function ProductsManagement() {
         offerPrice: "",
     });
 
-    // ✅ Load from backend or localStorage
+    // ✅ Load products
     useEffect(() => {
         const saved = localStorage.getItem("products");
         if (saved && JSON.parse(saved).length > 0) {
@@ -75,33 +83,62 @@ function ProductsManagement() {
         }
     }, []);
 
+    // ✅ Save to localStorage
     useEffect(() => {
         localStorage.setItem("products", JSON.stringify(products));
     }, [products]);
+    useEffect(() => {
+        localStorage.setItem("filterCategory", filterCategory);
+    }, [filterCategory]);
+    useEffect(() => {
+        localStorage.setItem("searchTerm", searchTerm);
+    }, [searchTerm]);
 
+    // ✅ Filter logic
     const filteredProducts = products.filter((p) => {
         const name = (p.name || "").toLowerCase();
         const category = (p.category || "").toLowerCase();
-        return (
-            (filterCategory === "all" || category === filterCategory) &&
-            name.includes(searchTerm.toLowerCase())
-        );
+        const matchesSearch = name.includes(searchTerm.toLowerCase());
+        const matchesCategory =
+            filterCategory === "all" || category === filterCategory;
+
+        if (showDeleted) {
+            return p.deleted && matchesSearch && matchesCategory;
+        } else {
+            return !p.deleted && matchesSearch && matchesCategory;
+        }
     });
 
+    // ✅ Open modal for add/edit
     const openModal = (product = null) => {
-        setEditProduct(product);
-        setFormData(
-            product || {
+        if (product) {
+            setEditProduct(product);
+            setFormData({
+                name: product.name,
+                category: product.category,
+                image: product.image,
+                originalPrice: product.originalPrice,
+                offerPrice: product.offerPrice,
+            });
+        } else {
+            setEditProduct(null);
+            setFormData({
                 name: "",
                 category: "rings",
                 image: "",
                 originalPrice: "",
                 offerPrice: "",
-            }
-        );
+            });
+        }
         setShowModal(true);
     };
 
+    const closeModal = () => {
+        setShowModal(false);
+        setEditProduct(null);
+    };
+
+    // ✅ Save product (add/edit)
     const handleSave = () => {
         if (!formData.name || !formData.image || !formData.originalPrice) {
             toast.error("Please fill all required fields!");
@@ -111,9 +148,7 @@ function ProductsManagement() {
         if (editProduct) {
             setProducts((prev) =>
                 prev.map((p) =>
-                    p._id === editProduct._id
-                        ? { ...p, ...formData }
-                        : p
+                    p._id === editProduct._id ? { ...p, ...formData } : p
                 )
             );
             toast.success("Product updated successfully!");
@@ -122,20 +157,36 @@ function ProductsManagement() {
                 ...formData,
                 _id: Date.now().toString(),
                 active: true,
+                deleted: false,
             };
             setProducts((prev) => [...prev, newProduct]);
             toast.success("Product added successfully!");
         }
 
-        setShowModal(false);
-        setEditProduct(null);
+        closeModal();
     };
 
+    // ✅ Soft Delete (mark deleted)
     const handleDelete = (id) => {
-        setProducts((prev) => prev.filter((p) => p._id !== id));
-        toast.error("Product deleted!");
+        setProducts((prev) =>
+            prev.map((p) =>
+                p._id === id ? { ...p, deleted: true } : p
+            )
+        );
+        toast.warn("Product moved to deleted list!");
     };
 
+    // ✅ Restore deleted product
+    const handleRestore = (id) => {
+        setProducts((prev) =>
+            prev.map((p) =>
+                p._id === id ? { ...p, deleted: false } : p
+            )
+        );
+        toast.success("Product restored!");
+    };
+
+    // ✅ Toggle Active
     const handleToggleActive = (id) => {
         setProducts((prev) =>
             prev.map((p) => (p._id === id ? { ...p, active: !p.active } : p))
@@ -149,9 +200,8 @@ function ProductsManagement() {
                 Products Management
             </h1>
 
-            {/* 🔍 Search + Filter + Add Button */}
+            {/* 🔍 Search + Filter + Add + Deleted Toggle */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-                {/* Search */}
                 <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 w-full md:w-1/3 bg-white shadow-sm">
                     <FaSearch className="text-gray-500 mr-2" />
                     <input
@@ -163,7 +213,6 @@ function ProductsManagement() {
                     />
                 </div>
 
-                {/* Filter */}
                 <div className="flex gap-2 flex-wrap justify-center">
                     {["all", "rings", "necklaces", "bracelets"].map((cat) => (
                         <button
@@ -179,16 +228,35 @@ function ProductsManagement() {
                     ))}
                 </div>
 
-                {/* Add Product */}
-                <button
-                    onClick={() => openModal()}
-                    className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 shadow-sm"
-                >
-                    <FaPlus /> Add Product
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => openModal()}
+                        className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 shadow-sm"
+                    >
+                        <FaPlus /> Add Product
+                    </button>
+
+                    <button
+                        onClick={() => setShowDeleted(!showDeleted)}
+                        className={`flex items-center gap-2 px-2 py-2 rounded-lg shadow-sm ${showDeleted
+                            ? "bg-gray-600 text-white"
+                            : "bg-red-500 text-white hover:bg-red-600"
+                            }`}
+                    >
+                        {showDeleted ? (
+                            <>
+                                <FaEyeSlash /> Hide Deleted
+                            </>
+                        ) : (
+                            <>
+                                <FaRecycle /> Show Deleted
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
 
-            {/* 🧾 Product Table (No Lines) */}
+            {/* 🧾 Table */}
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white rounded-xl shadow-md">
                     <thead className="bg-purple-600 text-white">
@@ -205,24 +273,24 @@ function ProductsManagement() {
                     <tbody>
                         {filteredProducts.length === 0 ? (
                             <tr>
-                                <td colSpan="7" className="text-center py-6 text-gray-500">
+                                <td
+                                    colSpan="7"
+                                    className="text-center py-6 text-gray-500"
+                                >
                                     No products found.
                                 </td>
                             </tr>
                         ) : (
                             filteredProducts.map((p) => (
-                                <tr
-                                    key={p._id}
-                                    className="bg-white hover:bg-purple-50 transition-all duration-200 rounded-lg shadow-sm my-3"
-                                >
+                                <tr key={p._id} className="border-b">
                                     <td className="p-3">
                                         <img
                                             src={p.image}
                                             alt={p.name}
-                                            className="w-20 h-20 object-cover rounded-lg shadow-sm"
+                                            className="w-20 h-20 object-cover rounded-lg"
                                         />
                                     </td>
-                                    <td className="p-3 font-medium">{p.name}</td>
+                                    <td className="p-3">{p.name}</td>
                                     <td className="p-3 capitalize">{p.category}</td>
                                     <td className="p-3">₹{p.originalPrice}</td>
                                     <td className="p-3 text-purple-600 font-semibold">
@@ -234,31 +302,54 @@ function ProductsManagement() {
                                                 Active
                                             </span>
                                         ) : (
-                                            <span className="text-gray-500">Inactive</span>
+                                            <span className="text-gray-500">
+                                                Inactive
+                                            </span>
                                         )}
                                     </td>
                                     <td className="p-3 flex justify-center gap-3">
-                                        <button
-                                            onClick={() => openModal(p)}
-                                            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg shadow-sm"
-                                        >
-                                            <FaEdit />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(p._id)}
-                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg shadow-sm"
-                                        >
-                                            <FaTrash />
-                                        </button>
-                                        <button
-                                            onClick={() => handleToggleActive(p._id)}
-                                            className={`px-3 py-2 rounded-lg text-white shadow-sm ${p.active
-                                                ? "bg-green-500 hover:bg-green-600"
-                                                : "bg-gray-400 hover:bg-gray-500"
-                                                }`}
-                                        >
-                                            {p.active ? <FaToggleOn /> : <FaToggleOff />}
-                                        </button>
+                                        {!p.deleted ? (
+                                            <>
+                                                <button
+                                                    onClick={() => openModal(p)}
+                                                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleDelete(p._id)
+                                                    }
+                                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg"
+                                                >
+                                                    <FaTrash />
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleToggleActive(p._id)
+                                                    }
+                                                    className={`px-3 py-2 rounded-lg text-white ${p.active
+                                                        ? "bg-green-500"
+                                                        : "bg-gray-400"
+                                                        }`}
+                                                >
+                                                    {p.active ? (
+                                                        <FaToggleOn />
+                                                    ) : (
+                                                        <FaToggleOff />
+                                                    )}
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button
+                                                onClick={() =>
+                                                    handleRestore(p._id)
+                                                }
+                                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg"
+                                            >
+                                                Restore
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))
@@ -267,81 +358,89 @@ function ProductsManagement() {
                 </table>
             </div>
 
-            {/* 🪟 Add/Edit Modal */}
+            {/* 🧩 Modal Form */}
             {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded-xl w-[90%] md:w-[450px] shadow-lg">
-                        <h2 className="text-xl font-semibold mb-4 text-purple-700 text-center">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-xl shadow-xl w-96 relative">
+                        <button
+                            onClick={closeModal}
+                            className="absolute top-3 right-3 text-gray-600 hover:text-black"
+                        >
+                            <FaTimes />
+                        </button>
+                        <h2 className="text-xl font-bold mb-4 text-purple-700">
                             {editProduct ? "Edit Product" : "Add Product"}
                         </h2>
 
-                        <input
-                            type="text"
-                            placeholder="Product Name"
-                            value={formData.name}
-                            onChange={(e) =>
-                                setFormData({ ...formData, name: e.target.value })
-                            }
-                            className="border border-gray-300 px-3 py-2 rounded-lg w-full mb-3"
-                        />
-                        <select
-                            value={formData.category}
-                            onChange={(e) =>
-                                setFormData({ ...formData, category: e.target.value })
-                            }
-                            className="border border-gray-300 px-3 py-2 rounded-lg w-full mb-3"
-                        >
-                            <option value="rings">Rings</option>
-                            <option value="necklaces">Necklaces</option>
-                            <option value="bracelets">Bracelets</option>
-                        </select>
-                        <input
-                            type="text"
-                            placeholder="Image URL"
-                            value={formData.image}
-                            onChange={(e) =>
-                                setFormData({ ...formData, image: e.target.value })
-                            }
-                            className="border border-gray-300 px-3 py-2 rounded-lg w-full mb-3"
-                        />
-                        {formData.image && (
-                            <img
-                                src={formData.image}
-                                alt="Preview"
-                                className="w-24 h-24 object-cover mx-auto mb-3 rounded-lg shadow"
+                        <div className="flex flex-col gap-3">
+                            <input
+                                type="text"
+                                placeholder="Product Name"
+                                value={formData.name}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        name: e.target.value,
+                                    })
+                                }
+                                className="border px-3 py-2 rounded-lg"
                             />
-                        )}
-                        <input
-                            type="number"
-                            placeholder="Original Price"
-                            value={formData.originalPrice}
-                            onChange={(e) =>
-                                setFormData({ ...formData, originalPrice: e.target.value })
-                            }
-                            className="border border-gray-300 px-3 py-2 rounded-lg w-full mb-3"
-                        />
-                        <input
-                            type="number"
-                            placeholder="Offer Price"
-                            value={formData.offerPrice}
-                            onChange={(e) =>
-                                setFormData({ ...formData, offerPrice: e.target.value })
-                            }
-                            className="border border-gray-300 px-3 py-2 rounded-lg w-full"
-                        />
-
-                        <div className="flex justify-end gap-2 mt-5">
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg"
+                            <select
+                                value={formData.category}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        category: e.target.value,
+                                    })
+                                }
+                                className="border px-3 py-2 rounded-lg"
                             >
-                                Cancel
-                            </button>
+                                <option value="rings">Rings</option>
+                                <option value="necklaces">Necklaces</option>
+                                <option value="bracelets">Bracelets</option>
+                            </select>
+                            <input
+                                type="text"
+                                placeholder="Image URL"
+                                value={formData.image}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        image: e.target.value,
+                                    })
+                                }
+                                className="border px-3 py-2 rounded-lg"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Original Price"
+                                value={formData.originalPrice}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        originalPrice: e.target.value,
+                                    })
+                                }
+                                className="border px-3 py-2 rounded-lg"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Offer Price"
+                                value={formData.offerPrice}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        offerPrice: e.target.value,
+                                    })
+                                }
+                                className="border px-3 py-2 rounded-lg"
+                            />
+
                             <button
                                 onClick={handleSave}
-                                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg"
+                                className="bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold mt-2"
                             >
-                                {editProduct ? "Update" : "Add"}
+                                Save
                             </button>
                         </div>
                     </div>

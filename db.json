@@ -46,15 +46,8 @@
       "lastLogin": "2024-12-18T14:25:00Z"
     },
     {
-      "id": "d426",
-      "name": "nibil",
-      "email": "nibil34@gmail.com",
-      "password": "nibil1234",
-      "role": "user",
-      "isActive": true,
-      "isBlocked": false,
-      "createdAt": "2024-08-30T12:35:00Z",
-      "lastLogin": "2024-12-19T15:40:00Z"
+      "isActive": false,
+      "id": "d426"
     },
     {
       "id": "e208",
@@ -87,28 +80,24 @@
       "id": "1761144908066"
     },
     {
-      "id": "1761546049308",
-      "name": "saras",
-      "email": "saras.fltr@gmail.com",
-      "password": "saras1234",
-      "role": "user",
-      "createdAt": "2025-10-27T06:20:49.308Z"
+      "isBlocked": false,
+      "id": "1761559170332"
     },
     {
-      "id": "1761559170332",
-      "name": "nyha elham",
-      "email": "elhamrashid@gmail.com",
-      "password": "nyha123",
-      "role": "user",
-      "createdAt": "2025-10-27T09:59:30.332Z"
-    },
-    {
-      "id": "1761637067130",
+      "id": "1762146892710",
       "name": "sahad tp",
-      "email": "sahad@gmail.com",
+      "email": "sahadtp98@gmail.com",
       "password": "sahadis123456",
       "role": "user",
-      "createdAt": "2025-10-28T07:37:47.130Z"
+      "createdAt": "2025-11-03T05:14:52.710Z"
+    },
+    {
+      "id": "1762146983208",
+      "name": "sameena",
+      "email": "saifusami@gmail.com",
+      "password": "sami1234",
+      "role": "user",
+      "createdAt": "2025-11-03T05:16:23.208Z"
     }
   ],
   "orders": [
@@ -213,6 +202,81 @@
       "paymentId": "FAKE_TXN_1761733972298",
       "date": "10/29/2025, 4:02:52 PM",
       "status": "shipped"
+    },
+    {
+      "id": "1762154125948",
+      "userEmail": "jumana.edv@gmail.com",
+      "userName": "sameena m",
+      "userId": "cfb3",
+      "items": [
+        {
+          "id": "3",
+          "name": "Engagment Ring",
+          "price": 40000,
+          "quantity": 1,
+          "image": "https://i.pinimg.com/736x/fa/7d/88/fa7d884df4514155fe6a8bf8ee494268.jpg"
+        }
+      ],
+      "total": 40000,
+      "paymentMethod": "UPI",
+      "paymentId": "FAKE_TXN_1762154125948",
+      "date": "2025-11-03T07:15:25.948Z",
+      "status": "completed",
+      "shippingAddress": {
+        "address": "fghjkl",
+        "city": "nilambur",
+        "phone": "07403363103"
+      }
+    },
+    {
+      "id": "1762155645775",
+      "userEmail": "rashad007@gmail.com",
+      "userName": "rashad cp",
+      "userId": "8638",
+      "items": [
+        {
+          "id": "1",
+          "name": "Diamond Ring",
+          "price": 19000,
+          "quantity": 1,
+          "image": "https://i.pinimg.com/736x/3c/e5/92/3ce592d081090b361711075fc9d9509e.jpg"
+        }
+      ],
+      "total": 19000,
+      "paymentMethod": "Cash on Delivery",
+      "paymentId": "FAKE_TXN_1762155645775",
+      "date": "2025-11-03T07:40:45.775Z",
+      "status": "Pending",
+      "shippingAddress": {
+        "address": "hgfds",
+        "city": "nilambur",
+        "phone": "07403363103"
+      }
+    },
+    {
+      "id": "1762155743332",
+      "userEmail": "sahad.tp@gmail.com",
+      "userName": "sameena m",
+      "userId": "0b9d",
+      "items": [
+        {
+          "id": "1",
+          "name": "Pearl Bracelets ",
+          "price": 1200,
+          "quantity": 1,
+          "image": "https://i.pinimg.com/1200x/17/40/65/17406587bde05c16c44f60da41b4f71d.jpg"
+        }
+      ],
+      "total": 1200,
+      "paymentMethod": "Cash on Delivery",
+      "paymentId": "FAKE_TXN_1762155743332",
+      "date": "2025-11-03T07:42:23.332Z",
+      "status": "Pending",
+      "shippingAddress": {
+        "address": "fghjkl",
+        "city": "nilambur",
+        "phone": "07403363103"
+      }
     }
   ],
   "offers": [
